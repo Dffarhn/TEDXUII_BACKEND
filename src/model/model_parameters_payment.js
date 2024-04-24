@@ -51,19 +51,14 @@ function updateParametersData(data) {
     const EmailInput = [updatedData.detail_customer.email];
   
     // Perform validation and handle errors
-    const errors = [];
     if (!validateNoSpaces(StringInput)) {
-      errors.push("String inputs must not contain spaces.");
+      throw new Error("String inputs must not contain spaces.");
     }
     if (!validatePhoneNumber(IntegerInput)) {
-      errors.push("Invalid phone number format.");
+      throw new Error("Invalid phone number format.");
     }
     if (!validateEmail(EmailInput)) {
-      errors.push("Invalid email format.");
-    }
-  
-    if (errors.length > 0) {
-      throw new Error(errors.join("\n"));
+      throw new Error("Invalid email format.");
     }
   
     // If validation passes, update PaymentData and return it
@@ -71,4 +66,4 @@ function updateParametersData(data) {
     return PaymentData;
   }
 
-module.exports = { PaymentData, updateParametersData };
+module.exports = { updateParametersData };

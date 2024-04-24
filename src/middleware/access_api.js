@@ -1,6 +1,9 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 const AccessApi = (req, res, next) => {
   const token = req.headers.authorization;
-  if (token === "admin") {
+  if (token === process.env.PASS_TOKEN) {
     // akan di buat menggunakan bycrpt
     next(); // Move to the next middleware
   } else {
