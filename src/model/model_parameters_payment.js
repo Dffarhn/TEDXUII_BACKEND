@@ -38,6 +38,8 @@ function updateParametersData(data) {
       updatedData.detail_data.name,
       updatedData.detail_data.category,
     ];
+
+    console.log(updatedData.detail_data.id)
   
     const IntegerInput = [
       updatedData.gross_amount,

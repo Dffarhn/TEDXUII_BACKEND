@@ -45,8 +45,7 @@ function MidtransPayment(data) {
     snap
       .createTransaction(parameter)
       .then((transaction) => {
-        let redirectUrl = transaction.redirect_url;
-        resolve(redirectUrl); // Mengembalikan URL redirect dari transaksi
+        resolve(transaction); // Mengembalikan URL redirect dari transaksi
       })
       .catch((err) => {
         reject(err); // Mengembalikan error jika ada kesalahan dalam pembuatan transaksi
