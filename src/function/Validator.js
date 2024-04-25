@@ -9,10 +9,16 @@ function validateNoSpaces(inputs) {
   return inputs.every((input) => input.trim().length > 0);
 }
 
-function validatePhoneNumber(phoneNumbers) {
+function validateNumber(phoneNumbers) {
   // Regular expression to allow only digits
   const phoneRegex = /^[0-9]+$/;
   return phoneNumbers.every((phone) => phoneRegex.test(phone));
 }
 
-module.exports = { validateEmail, validateNoSpaces, validatePhoneNumber };
+function validatorUUID(uuid) {
+  const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+  return uuidRegex.test(uuid);
+}
+
+
+module.exports = { validateEmail, validateNoSpaces, validateNumber, validatorUUID };

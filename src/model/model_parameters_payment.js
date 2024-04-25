@@ -1,6 +1,6 @@
 // Di dalam file paymentData.js
 
-const { validateNoSpaces, validatePhoneNumber, validateEmail } = require("../function/Validator.js");
+const { validateNoSpaces, validateNumber, validateEmail } = require("../function/Validator.js");
 
 let PaymentData = {
   order_id: "",
@@ -54,7 +54,7 @@ function updateParametersData(data) {
     if (!validateNoSpaces(StringInput)) {
       throw new Error("String inputs must not contain spaces.");
     }
-    if (!validatePhoneNumber(IntegerInput)) {
+    if (!validateNumber(IntegerInput)) {
       throw new Error("Invalid phone number format.");
     }
     if (!validateEmail(EmailInput)) {

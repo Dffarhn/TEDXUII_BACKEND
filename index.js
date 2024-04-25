@@ -4,6 +4,7 @@ const cors = require("cors");
 const { route } = require("./src/routes/route.js");
 const { AccessApi } = require("./src/middleware/access_api.js");
 
+const pool = require("./db_connect.js");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -15,6 +16,16 @@ const corsOptions = {
     optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specified HTTP methods
 };
+
+app.get('/test', async (req, res) => {
+  try {
+      const { rows } = await pool.query('SELECT * FROM Event');
+      res.status(200).send(rows);
+  } catch (err) {
+      console.error('Error executing query', err.stack);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 app.use(cors(corsOptions));
 app.use(express.json());
