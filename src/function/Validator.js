@@ -20,5 +20,20 @@ function validatorUUID(uuid) {
   return uuidRegex.test(uuid);
 }
 
+function validatorAdmin(token) {
 
-module.exports = { validateEmail, validateNoSpaces, validateNumber, validatorUUID };
+
+  
+}
+
+function validateRequestBody(body, requiredFields) {
+  for (const field of requiredFields) {
+    if (!body[field] || body[field].trim() === '') {
+      return `${field} is required and must not be empty.`;
+    }
+  }
+  return null; // Return null if all required fields are present and not empty
+}
+
+
+module.exports = { validateEmail, validateNoSpaces, validateNumber, validatorUUID,validatorAdmin,validateRequestBody };
