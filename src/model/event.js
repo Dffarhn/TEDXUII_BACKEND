@@ -94,43 +94,35 @@ async function AddEventDB(data) {
 
 async function UpdateEventDB(data) {
   try {
-
     const updateColumns = [];
     const values = [];
 
-    console.log(data)
+    console.log(data);
 
-    Object.keys(data).forEach(key => {
+    Object.keys(data).forEach((key) => {
+      console.table(typeof data[key]);
 
-      console.table(typeof data[key])
-
-      if (key !== 'id_event') {
-        
+      if (key !== "id_event") {
         if (typeof data[key] == "string") {
           if (validateNoSpaces(data[key])) {
-            updateColumns.push(key)
-            values.push(data[key])
-            
-          }        
-        }else{
+            updateColumns.push(key);
+            values.push(data[key]);
+          }
+        } else {
           if (validateNumber(data[key])) {
-  
             updateColumns.push(key);
             // Assuming price should be a number, parse it
             values.push(parseInt(data[key], 10));
-          }  
-  
+          }
         }
       }
-      
     });
- 
 
     // Periksa apakah ada kolom yang akan diupdate
     if (updateColumns.length > 0) {
       // Buat string untuk menggabungkan kolom-kolom yang akan diupdate dalam query
       const updateQuery = updateColumns.map((col, index) => `${col}=$${index + 1}`).join(", ");
-      
+
       values.push(data.id_event);
       // Buat queryText dengan kolom-kolom yang akan diupdate
       const queryText = `
@@ -147,9 +139,8 @@ async function UpdateEventDB(data) {
       // Example:
       const rows = await pool.query(queryText, values);
 
-
       // Return success message or updated data
-      console.log(rows.rowCount)
+      console.log(rows.rowCount);
       return rows;
     } else {
       // Tidak ada kolom yang akan diupdate karena semua nilainya null
@@ -163,4 +154,24 @@ async function UpdateEventDB(data) {
   }
 }
 
-module.exports = { GetAllEvent, GetSpesificEventById, AddEventDB, UpdateEventDB };
+async function DeleteEventDB(id_event) {
+  try {
+    const data = [id_event];
+
+    const query = `
+
+    DELETE FROM public.event
+	    WHERE id_event = $1;
+    
+    `;
+
+    const { rows } = await pool.query(query, data);
+
+    return rows;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+module.exports = { GetAllEvent, GetSpesificEventById, AddEventDB, UpdateEventDB, DeleteEventDB };
