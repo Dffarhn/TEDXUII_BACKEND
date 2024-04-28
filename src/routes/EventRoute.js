@@ -59,7 +59,7 @@ const Update_Event = async (req, res) => {
     const data_update = req.body;
     const data_id = req.params;
 
-    if (validatorUUID(data_id.id_event)) {
+    if (!validatorUUID(data_id.id_event)) {
       throw new Error();
     }
     const data = {

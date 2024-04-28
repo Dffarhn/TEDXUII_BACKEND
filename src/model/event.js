@@ -2,8 +2,11 @@ const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
 
 async function GetAllEvent(sort = null, year = null, name = null) {
-  let queryString = "SELECT * FROM event";
+  let queryString = "SELECT event.*, category.nama_category AS category_name FROM event";
   let queryParams = [];
+
+  // Join the category table
+  queryString += " LEFT JOIN category ON event.category = category.id";
 
   // Check if filtering by year is specified
   if (year) {
@@ -62,13 +65,17 @@ async function AddEventDB(data) {
 
     const Main_Data = [name_event, price, category, year];
 
-    const dataString = [name_event, category, year];
+    const dataString = [name_event, year];
 
     const check_input_string = validateNoSpacesArray(dataString);
 
     const price_data = parseInt(price, 10);
 
-    const check_input_integer = validateNumber(price_data);
+    const category_data = parseInt(category, 10);
+
+    const dataInteger=[price_data, category_data]
+
+    const check_input_integer = validateNumber(dataInteger);
 
     if (check_input_integer && check_input_string) {
       // Use parameterized query to prevent SQL injection
@@ -107,12 +114,16 @@ async function UpdateEventDB(data) {
           if (validateNoSpaces(data[key])) {
             updateColumns.push(key);
             values.push(data[key]);
+          }else{
+            throw new Error
           }
         } else {
           if (validateNumber(data[key])) {
             updateColumns.push(key);
             // Assuming price should be a number, parse it
             values.push(parseInt(data[key], 10));
+          }else{
+            throw new Error
           }
         }
       }
@@ -157,16 +168,13 @@ async function UpdateEventDB(data) {
 async function DeleteEventDB(id_event) {
   try {
     const data = [id_event];
-
     const query = `
 
     DELETE FROM public.event
 	    WHERE id_event = $1;
     
     `;
-
     const { rows } = await pool.query(query, data);
-
     return rows;
   } catch (error) {
     console.log(error);

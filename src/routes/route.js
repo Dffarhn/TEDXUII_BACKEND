@@ -8,6 +8,9 @@ route.get("/", (req, res) => {
   res.status(200).send("Halo world");
 });
 
+//route Merchandise
+
+// Route events
 route.get("/events", Get_Events);
 route.get("/event/:id_event", Get_Event);
 route.post("/event", Add_Event);
