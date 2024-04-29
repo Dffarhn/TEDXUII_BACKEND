@@ -97,8 +97,6 @@ async function UpdateMerchadiseDB(data) {
     console.log(data);
 
     Object.keys(data).forEach((key) => {
-      console.table(typeof data[key]);
-
       if (key !== "id_merchandise") {
         if (typeof data[key] == "string") {
           if (validateNoSpaces(data[key])) {
@@ -108,6 +106,7 @@ async function UpdateMerchadiseDB(data) {
             throw new Error
           }
         } else {
+          console.log(data[key]);
           if (validateNumber(data[key])) {
             updateColumns.push(key);
             // Assuming price should be a number, parse it
@@ -138,7 +137,7 @@ async function UpdateMerchadiseDB(data) {
       console.log("Values:", values);
       // Execute your database update query using the queryText and values
       // Example:
-      const rows = await pool.query(queryText, values);
+      // const rows = await pool.query(queryText, values);
 
       // Return success message or updated data
       console.log(rows.rowCount);

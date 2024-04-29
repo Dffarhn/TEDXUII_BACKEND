@@ -2,12 +2,20 @@ const { Router } = require("express");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
 const { Get_Events, Get_Event, Add_Event, Update_Event, Delete_Event } = require("./EventRoute.js");
 const { Get_Merchandises, Get_Merchandise, Add_Merchandise, Update_Merchandise, Delete_Merchandise } = require("./MerchandiseRoute.js");
+const { Get_Bundlings, Get_Bundling, Add_Bundling, Update_Bundling, Delete_Bundling } = require("./BundlingRoute.js");
 
 const route = Router();
 
 route.get("/", (req, res) => {
   res.status(200).send("Halo world");
 });
+//route Bundling
+route.get("/bundlings", Get_Bundlings)
+route.get("/bundling/:id_bundling", Get_Bundling)
+route.post("/bundling", Add_Bundling);
+route.patch("/bundling/:id_bundling", Update_Bundling );
+route.delete("/bundling/:id_bundling", Delete_Bundling);
+
 
 //route Merchandise
 route.get("/merchandises", Get_Merchandises);

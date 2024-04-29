@@ -1,10 +1,11 @@
 const { validateNumber, validateRequestBody, validatorUUID } = require("../function/Validator.js");
+const { GetAllBundling, GetSpesificBundlingById, AddBundlingDB, UpdateBundlingDB, DeleteBundlingDB } = require("../model/bundling.js");
 const { GetSpesificMerchandiseById, GetAllMerchandise, AddMerchandiseDB, UpdateMerchadiseDB, DeleteMerchandiseDB } = require("../model/merchandise.js");
 
-const Get_Merchandises = async (req, res) => {
+const Get_Bundlings = async (req, res) => {
   const { sort } = req.query;
   try {
-    const data = await GetAllMerchandise(sort);
+    const data = await GetAllBundling(sort);
 
     if (data.length > 0) {
       res.status(200).send(data);
@@ -16,10 +17,10 @@ const Get_Merchandises = async (req, res) => {
   }
 };
 
-const Get_Merchandise = async (req, res) => {
+const Get_Bundling = async (req, res) => {
   try {
-    const { id_merchandise } = req.params;
-    const data = await GetSpesificMerchandiseById(id_merchandise);
+    const { id_bundling } = req.params;
+    const data = await GetSpesificBundlingById(id_bundling);
 
     if (data.length > 0) {
       res.status(200).send(data);
@@ -31,16 +32,16 @@ const Get_Merchandise = async (req, res) => {
   }
 };
 
-const Add_Merchandise = async (req, res) => {
+const Add_Bundling = async (req, res) => {
   try {
     const data = req.body;
-    const require = ["name_merchandise", "price_merchandise", "stock_merchandise"];
+    const require = ["name_bundling", "price_bundling", "stock_bundling", "list_bundling"];
 
     const check = validateRequestBody(data, require);
     // console.log(`checkvalid = ${check}`);
 
     if (check) {
-      const add_data = await AddMerchandiseDB(data);
+      const add_data = await AddBundlingDB(data);
       console.log(add_data);
       if (add_data) {
         res.status(201).send({ msg: "Sucessfully added", data: add_data });
@@ -54,28 +55,27 @@ const Add_Merchandise = async (req, res) => {
   }
 };
 
-const Update_Merchandise = async (req, res) => {
+const Update_Bundling = async (req, res) => {
   try {
     const data_update = req.body;
     const data_id = req.params;
 
-    if (!validatorUUID(data_id.id_merchandise)) {
+    if (!validatorUUID(data_id.id_bundling)) {
       throw new Error();
     }
     const data = {
-      id_merchandise: data_id.id_merchandise || null,
-      name_merchandise: data_update.name_merchandise || null,
-      price_merchandise : data_update.price_merchandise || null,
-      stock_merchandise: data_update.stock_merchandise || null,
+      id_bundling: data_id.id_bundling || null,
+      name_bundling: data_update.name_bundling || null,
+      price_bundling : data_update.price_bundling || null,
+      stock_bundling: data_update.stock_bundling || null,
+      list_bundling: data_update.list_bundling || null
     };
-
     const filteredData = Object.fromEntries(
       Object.entries(data).filter(([key, value]) => value !== null)
     );
+    
 
-    console.log(filteredData)
-
-    const hasil_update = await UpdateMerchadiseDB(filteredData);
+    const hasil_update = await UpdateBundlingDB(filteredData);
     if (hasil_update) {
       res.status(200).send({ msg: "Update Success", data: hasil_update });
     }
@@ -85,12 +85,12 @@ const Update_Merchandise = async (req, res) => {
   }
 };
 
-const Delete_Merchandise = async (req, res) => {
+const Delete_Bundling = async (req, res) => {
   try {
-    const { id_merchandise } = req.params;
-    console.log(id_merchandise)
-    if (validatorUUID(id_merchandise)) {
-      const hasil_delete = await DeleteMerchandiseDB(id_merchandise);
+    const { id_bundling } = req.params;
+    console.log(id_bundling)
+    if (validatorUUID(id_bundling)) {
+      const hasil_delete = await DeleteBundlingDB(id_bundling);
 
       if (hasil_delete) {
         res.status(200).send({ msg: "delete event successfully deleted" });
@@ -104,4 +104,4 @@ const Delete_Merchandise = async (req, res) => {
   }
 };
 
-module.exports = { Get_Merchandises, Get_Merchandise, Add_Merchandise, Update_Merchandise, Delete_Merchandise };
+module.exports = { Get_Bundlings, Get_Bundling, Add_Bundling, Update_Bundling, Delete_Bundling };
