@@ -48,7 +48,7 @@ function validateRequestBody(body, requiredFields) {
   console.log(body);
   console.log(requiredFields);
   for (const field of requiredFields) {
-    console.table(typeof body[field])
+
     if (typeof body[field] === "string") {
       // Check if the field is a string
       if (!body[field] || body[field].trim() === "") {
@@ -62,8 +62,6 @@ function validateRequestBody(body, requiredFields) {
     }else if(typeof body[field] === "object"){
       return true
     } else {
-
-      console.table(typeof body[field])
 
       // Invalid field type
       return false;

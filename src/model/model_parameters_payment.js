@@ -21,49 +21,61 @@ let PaymentData = {
   },
 };
 
-function updateParametersData(data) {
-    // Update objek PaymentData sesuai dengan data yang diterima dari req.body
-    const updatedData = {
-      ...PaymentData, // Copy existing data
-      ...data, // Update with new data from req.body
-    };
-  
-    // Extract input values for validation
-    const StringInput = [
-      updatedData.order_id,
-      updatedData.detail_customer.first_name,
-      updatedData.detail_customer.last_name,
-      updatedData.detail_customer.address,
-      updatedData.detail_data.id,
-      updatedData.detail_data.name,
-      updatedData.detail_data.category,
-    ];
+function MakePaymentData(data) {
+  const StringInput = [
+    data.id,
+    data.detail_customer[0].first_name,
+    data.detail_customer[0].last_name,
+    data.detail_customer[0].address,
+    data.event_details[0].id_event,
+    data.event_details[0].name_event,
+    data.event_details[0].category,
+  ];
 
-    console.log(updatedData.detail_data.id)
-  
-    const IntegerInput = [
-      updatedData.gross_amount,
-      updatedData.detail_data.price,
-      updatedData.detail_data.quantity,
-      updatedData.detail_customer.phone_number,
-    ];
-  
-    const EmailInput = [updatedData.detail_customer.email];
-  
-    // Perform validation and handle errors
-    if (!validateNoSpacesArray(StringInput)) {
-      throw new Error("String inputs must not contain spaces.");
-    }
-    if (!validateNumber(IntegerInput)) {
-      throw new Error("Invalid phone number format.");
-    }
-    if (!validateEmail(EmailInput)) {
-      throw new Error("Invalid email format.");
-    }
-  
-    // If validation passes, update PaymentData and return it
-    PaymentData = updatedData;
-    return PaymentData;
+
+  const IntegerInput = [
+    data.gross_amount,
+    data.data.event_details[0].price,
+    data.quantity,
+    data.detail_customer[0].phone_number,
+  ];
+
+  const EmailInput = [data.detail_customer[0].email];
+
+  // Perform validation and handle errors
+  if (!validateNoSpacesArray(StringInput)) {
+    throw new Error("String inputs must not contain spaces.");
+  }
+  if (!validateNumber(IntegerInput)) {
+    throw new Error("Invalid phone number format.");
+  }
+  if (!validateEmail(EmailInput)) {
+    throw new Error("Invalid email format.");
   }
 
-module.exports = { updateParametersData };
+
+  let PaymentData = {
+    order_id: data.id,
+    gross_amount: data.gross_amount,
+    detail_data: {
+      id: data.event_details[0].id_event,
+      price: data.event_details[0].price,
+      quantity: data.quantity,
+      name: data.event_details[0].name_event,
+      category: data.event_details[0].category,
+    },
+    detail_customer: {
+      first_name: data.buyer_details[0].first_name,
+      last_name: data.buyer_details[0].last_name,
+      email: data.buyer_details[0].email,
+      phone_number: data.buyer_details[0].phone_number,
+      address: data.buyer_details[0].address,
+    },
+  };
+
+  return PaymentData
+  
+}
+
+
+module.exports = {  MakePaymentData };

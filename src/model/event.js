@@ -42,7 +42,7 @@ async function GetSpesificEventById(id) {
   try {
     if (validatorUUID(id)) {
       const { rows } = await pool.query("SELECT * FROM Event WHERE id_event = $1", [id]);
-      console.log(rows);
+      // console.log(rows[0]);
       return rows;
     } else {
       throw new Error({ error: "Invalid input" });

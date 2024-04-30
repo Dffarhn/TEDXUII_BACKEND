@@ -3,12 +3,31 @@ const { Midtrans_Payment } = require("./MidtransRoute.js");
 const { Get_Events, Get_Event, Add_Event, Update_Event, Delete_Event } = require("./EventRoute.js");
 const { Get_Merchandises, Get_Merchandise, Add_Merchandise, Update_Merchandise, Delete_Merchandise } = require("./MerchandiseRoute.js");
 const { Get_Bundlings, Get_Bundling, Add_Bundling, Update_Bundling, Delete_Bundling } = require("./BundlingRoute.js");
+const { Add_Transaction } = require("./TransactionRoute.js");
+const { CheckEvent } = require("../middleware/transactionMid.js");
 
 const route = Router();
 
 route.get("/", (req, res) => {
   res.status(200).send("Halo world");
 });
+
+
+
+//route report
+
+//route transaction bundling
+
+//route transaction merchandise
+
+//route transaction event
+route.post("/transaction/event",CheckEvent, Add_Transaction);
+
+
+
+
+
+
 //route Bundling
 route.get("/bundlings", Get_Bundlings)
 route.get("/bundling/:id_bundling", Get_Bundling)
