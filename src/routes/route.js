@@ -4,7 +4,7 @@ const { Get_Events, Get_Event, Add_Event, Update_Event, Delete_Event } = require
 const { Get_Merchandises, Get_Merchandise, Add_Merchandise, Update_Merchandise, Delete_Merchandise } = require("./MerchandiseRoute.js");
 const { Get_Bundlings, Get_Bundling, Add_Bundling, Update_Bundling, Delete_Bundling } = require("./BundlingRoute.js");
 const { Add_Transaction } = require("./TransactionRoute.js");
-const { CheckEvent } = require("../middleware/transactionMid.js");
+const { CheckEvent, Add_Buyer } = require("../middleware/transactionMid.js");
 
 const route = Router();
 
@@ -14,14 +14,15 @@ route.get("/", (req, res) => {
 
 
 
-//route report
+//admin
+
 
 //route transaction bundling
 
 //route transaction merchandise
 
 //route transaction event
-route.post("/transaction/event",CheckEvent, Add_Transaction);
+route.post("/transaction/event",Add_Buyer,CheckEvent, Add_Transaction);
 
 
 

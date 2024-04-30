@@ -9,6 +9,7 @@ async function Midtrans_Payment (dataDB){
     console.log(data);
 
     const data_transaction = MakePaymentData(data)
+    console.log(data_transaction);
 
     
 
@@ -28,7 +29,7 @@ async function Midtrans_Payment (dataDB){
       return respones_midtrans// Mengirimkan URL redirect sebagai respons
     }
   } catch (error) {
-    res.status(500).send({ error: error.message }); // Mengirimkan pesan error jika terjadi kesalahan
+    throw new Error; // Mengirimkan pesan error jika terjadi kesalahan
   }
   
 } 

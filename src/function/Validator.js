@@ -1,13 +1,14 @@
-function validateEmail(emails) {
+function validateEmail(email) {
   // Check if each email in the array matches the email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emails.every((email) => emailRegex.test(email));
+  return emailRegex.test(email);
 }
 
 function validateNoSpacesArray(inputs) {
   console.table(inputs)
   for (let input of inputs) {
     if (input.trim().length === 0) {
+      console.log(input)
       return false; // Return false if any input contains only whitespace characters
     }
   }
@@ -22,6 +23,7 @@ function validateNoSpaces(input) {
 
 function validateNumber(valueOrArray) {
   if (Array.isArray(valueOrArray)) {
+    console.log(valueOrArray)
     // Regular expression to allow only digits
     const phoneRegex = /^[0-9]+$/;
     for (let i = 0; i < valueOrArray.length; i++) {
@@ -41,8 +43,6 @@ function validatorUUID(uuid) {
   const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
   return uuidRegex.test(uuid);
 }
-
-function validatorAdmin(token) {}
 
 function validateRequestBody(body, requiredFields) {
   console.log(body);
@@ -79,4 +79,4 @@ function validateNotNull(inputs) {
   return true; // Return true if all inputs are not null or undefined
 }
 
-module.exports = { validateNoSpaces, validateEmail, validateNoSpacesArray, validateNumber, validatorUUID, validatorAdmin, validateRequestBody, validateNotNull };
+module.exports = { validateNoSpaces, validateEmail, validateNoSpacesArray, validateNumber, validatorUUID, validateRequestBody, validateNotNull };

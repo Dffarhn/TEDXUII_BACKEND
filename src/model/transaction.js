@@ -1,6 +1,5 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
-const { MidtransPayment } = require("../function/payment.js");
 
 async function GetSpesificTransactionById(id) {
   try {
@@ -18,17 +17,17 @@ async function GetSpesificTransactionById(id) {
   }
 }
 
-async function AddEventTransactionDB(data,data_event) {
+async function AddEventTransactionDB(data,data_event,data_buyer) {
     try {
 
       console.log(data_event.stock)
-      const { id_event, id_buyer, quantity } = data;
+      const { id_event, quantity } = data;
 
-      if (data_event.stock > 0 && data_event.stock > quantity) {
+      if (data_event.stock > 0 && data_event.stock >= quantity) {
         console.log("hitascsacasc")
         
-        const Main_Data = [id_event, id_buyer, quantity];
-        const dataString = [id_event, id_buyer];
+        const Main_Data = [id_event, data_buyer.id_buyer, quantity];
+        const dataString = [id_event, data_buyer.id_buyer];
         //check uuid
         dataString.forEach((element) => {
           if (!validatorUUID(element)) {
@@ -48,7 +47,7 @@ async function AddEventTransactionDB(data,data_event) {
         }
   
         const gross_amount = data_event.price * quantity;
-        Main_Data.push(gross_amount)
+        Main_Data.push((gross_amount))
   
         // status
         // pending, failed, completed

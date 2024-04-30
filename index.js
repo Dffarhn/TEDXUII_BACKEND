@@ -10,10 +10,10 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002;
 app.use(helmet())
 const corsOptions = {
-    origin: 'http://127.0.0.1:5500', // Replace 'https://example.com' with your specific URL
+    origin: 'http://127.0.0.1:3000', // Replace 'https://example.com' with your specific URL
     optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specified HTTP methods
 };

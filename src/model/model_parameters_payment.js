@@ -2,45 +2,30 @@
 
 const { validateNumber, validateEmail, validateNoSpacesArray } = require("../function/Validator.js");
 
-let PaymentData = {
-  order_id: "",
-  gross_amount: 0,
-  detail_data: {
-    id: "",
-    price: 0,
-    quantity: 0,
-    name: "",
-    category: "",
-  },
-  detail_customer: {
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone_number: "",
-    address: "",
-  },
-};
-
 function MakePaymentData(data) {
   const StringInput = [
-    data.id,
-    data.detail_customer[0].first_name,
-    data.detail_customer[0].last_name,
-    data.detail_customer[0].address,
+    data.buyer_details[0].username,
+    data.buyer_details[0].address,
     data.event_details[0].id_event,
     data.event_details[0].name_event,
-    data.event_details[0].category,
+    data.buyer_details[0].phone_number,
   ];
+  
+  console.log(data)
 
+  console.log(StringInput);
+  
 
   const IntegerInput = [
-    data.gross_amount,
-    data.data.event_details[0].price,
+    data.id,
+    data.event_details[0].category,
+    parseInt(data.gross_amount,10),
+    data.event_details[0].price,
     data.quantity,
-    data.detail_customer[0].phone_number,
   ];
 
-  const EmailInput = [data.detail_customer[0].email];
+  const EmailInput = data.buyer_details[0].email;
+
 
   // Perform validation and handle errors
   if (!validateNoSpacesArray(StringInput)) {
@@ -65,13 +50,14 @@ function MakePaymentData(data) {
       category: data.event_details[0].category,
     },
     detail_customer: {
-      first_name: data.buyer_details[0].first_name,
-      last_name: data.buyer_details[0].last_name,
+      first_name: data.buyer_details[0].username,
       email: data.buyer_details[0].email,
       phone_number: data.buyer_details[0].phone_number,
       address: data.buyer_details[0].address,
     },
   };
+
+  console.log(PaymentData)
 
   return PaymentData
   
