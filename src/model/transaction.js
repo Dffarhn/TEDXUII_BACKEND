@@ -113,6 +113,7 @@ async function UpdateEventTransactionDB(id,status_data){
       
       return rows
   } catch (error) {
+    console.log(error);
     
   }
 

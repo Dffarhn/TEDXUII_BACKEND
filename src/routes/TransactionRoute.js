@@ -46,12 +46,14 @@ const Notification_Transaction_Event = async (req, res) => {
       const update_event_transaction = Cek_Notification(info_payment)
 
       if (update_event_transaction !== "pending" || update_event_transaction !== "unknown") {
-        const update_transaction_event_toDB = UpdateEventTransactionDB(parseInt(info_payment.order_id,10), update_event_transaction)        
+        const update_transaction_event_toDB = UpdateEventTransactionDB(parseInt(info_payment.order_id,10), update_event_transaction)  
+        console.log(update_transaction_event_toDB);      
       }
       
     }
 
   } catch (error) {
+    console.error(error);
     
   }
 }
