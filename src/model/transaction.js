@@ -100,7 +100,7 @@ async function UpdateEventTransactionDB(id,status_data){
     const queryText = `
       UPDATE public.transaction_event
       SET status = $1
-      WHERE id_transaction=$${values.length};
+      WHERE id=$${values.length};
       `;
 
       // Tambahkan id_event ke values array
