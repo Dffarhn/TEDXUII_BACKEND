@@ -95,7 +95,7 @@ async function AddEventTransactionDB(data, data_event, data_buyer) {
 
 async function UpdateEventTransactionDB(id,status_data){
   try {
-    const values = [id,status_data]
+    const values = [status_data,id]
 
     const queryText = `
       UPDATE public.transaction_event
