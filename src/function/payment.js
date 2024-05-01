@@ -27,7 +27,6 @@ function MidtransPayment(data) {
         "price": detail_data.price,
         "quantity": detail_data.quantity,
         "name": detail_data.name,
-        "category": detail_data.category,
       }],
       customer_details: {
         "first_name": detail_customer.first_name,

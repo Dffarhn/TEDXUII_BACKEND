@@ -7,6 +7,8 @@ const { Add_Transaction_Event, Notification_Transaction_Event, Cancel_Transactio
 const { CheckEvent, Add_Buyer } = require("../middleware/transactionMid.js");
 const { CheckMerchandise } = require("../middleware/transactionMidMerchandise.js");
 const { Add_Transaction_merchandise } = require("./TransactionMerchandiseRoute.js");
+const { CheckBundling } = require("../middleware/transactionMidBundling.js");
+const { Add_Transaction_Bundling } = require("./TransactionBundlingRoute.js");
 
 const route = Router();
 
@@ -20,6 +22,7 @@ route.get("/", (req, res) => {
 
 
 //route transaction bundling
+route.post("/transaction/bundling",Add_Buyer,CheckBundling, Add_Transaction_Bundling);
 
 //route transaction merchandise
 route.post("/transaction/merchandise",Add_Buyer,CheckMerchandise, Add_Transaction_merchandise);

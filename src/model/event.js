@@ -61,9 +61,9 @@ async function GetSpesificEventById(id) {
 
 async function AddEventDB(data) {
   try {
-    const { name, price, category, year } = data;
+    const { name, price, category, year,stock } = data;
 
-    const Main_Data = [name, price, category, year];
+    const Main_Data = [name, price, category, year,stock];
 
     const dataString = [name, year];
 
@@ -73,15 +73,17 @@ async function AddEventDB(data) {
 
     const category_data = parseInt(category, 10);
 
-    const dataInteger=[price_data, category_data]
+    const stock_data = parseInt(stock, 10);
+
+    const dataInteger=[price_data, category_data,stock_data]
 
     const check_input_integer = validateNumber(dataInteger);
 
     if (check_input_integer && check_input_string) {
       // Use parameterized query to prevent SQL injection
       const queryText = `
-         INSERT INTO event(name, price, category, year)
-         VALUES ($1, $2, $3, $4)
+         INSERT INTO event(name, price, category, year,stock)
+         VALUES ($1, $2, $3, $4,$5)
          RETURNING *;
        `;
       const values = Main_Data;

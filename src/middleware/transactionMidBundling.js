@@ -1,15 +1,16 @@
+const { GetSpesificBundlingById } = require("../model/bundling");
 const { AddBuyerDB } = require("../model/buyer");
 const { GetSpesificEventById } = require("../model/event");
 const { GetSpesificMerchandiseById } = require("../model/merchandise");
 
-const CheckMerchandise = async(req,res,next)=>{
+const CheckBundling = async(req,res,next)=>{
     try {
-        const {id_merchandise} = req.body
-        console.log(id_merchandise)
+        const {id_bundling} = req.body
+        console.log(id_bundling)
 
-        const data = await GetSpesificMerchandiseById(id_merchandise);
+        const data = await GetSpesificBundlingById(id_bundling);
         if (data.length > 0) {
-            req.data_merchandise = data[0]
+            req.data_Bundling = data[0]
             next()
           } else {
             res.status(404).send({ msg: "data tidak ditemukan" });
@@ -22,4 +23,4 @@ const CheckMerchandise = async(req,res,next)=>{
 }
 
 
-module.exports={CheckMerchandise}
+module.exports={CheckBundling}

@@ -4,10 +4,11 @@ const { validateNumber, validateEmail, validateNoSpacesArray } = require("../fun
 
 function MakePaymentData(data) {
   const StringInput = [
+    data.id,
     data.buyer_details[0].username,
     data.buyer_details[0].address,
-    data.event_details[0].id_event,
-    data.event_details[0].name_event,
+    data.data_details[0].id,
+    data.data_details[0].name,
     data.buyer_details[0].phone_number,
   ];
   
@@ -17,10 +18,8 @@ function MakePaymentData(data) {
   
 
   const IntegerInput = [
-    data.id,
-    data.event_details[0].category,
     parseInt(data.gross_amount,10),
-    data.event_details[0].price,
+    data.data_details[0].price,
     data.quantity,
   ];
 
@@ -43,11 +42,10 @@ function MakePaymentData(data) {
     order_id: data.id,
     gross_amount: data.gross_amount,
     detail_data: {
-      id: data.event_details[0].id_event,
-      price: data.event_details[0].price,
+      id: data.data_details[0].id,
+      price: data.data_details[0].price,
       quantity: data.quantity,
-      name: data.event_details[0].name_event,
-      category: data.event_details[0].category,
+      name: data.data_details[0].name,
     },
     detail_customer: {
       first_name: data.buyer_details[0].username,

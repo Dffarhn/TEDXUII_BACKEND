@@ -6,9 +6,9 @@ async function GetSpesificTransactionById(id) {
     console.log(id);
     const { rows } = await pool.query(
       `
-      SELECT te.* , json_agg(e.*) AS event_details, json_agg(b.*) AS buyer_details
+      SELECT te.* , json_agg(e.*) AS data_details, json_agg(b.*) AS buyer_details
       FROM transaction_event te
-      JOIN event e ON e.id_event = te.event_id
+      JOIN event e ON e.id = te.event_id
       JOIN buyer b ON b.id_buyer = te.buyer_id
       WHERE te.id = $1
 	    GROUP BY te.id, te.gross_amount,te.status,te.quantity`,
@@ -57,21 +57,22 @@ async function AddEventTransactionDB(data, data_event, data_buyer) {
         Main_Data.push(data_event.stock - quantity);
         // Use parameterized query to prevent SQL injection
         const queryText_transaction = `
-        INSERT INTO public.transaction_event(event_id, buyer_id, quantity, gross_amount, status)
-        VALUES ($1, $2, $3, $4,$5 )
+        INSERT INTO public.transaction_event(event_id, buyer_id, quantity, gross_amount)
+        VALUES ($1, $2, $3, $4)
         RETURNING *;
           `;
 
         const queryText_updateEvent = `UPDATE public.event 
           SET stock = $2 
-          Where id_event = $1;
+          Where id = $1;
           `;
 
         const values = Main_Data;
-        console.log(values);
+        console.log(values.slice(0, 4));
+
 
         // Execute the query using parameterized values
-        const { rows } = await pool.query(queryText_transaction, values.slice(0, 5));
+        const { rows } = await pool.query(queryText_transaction, values.slice(0, 4));
 
         await pool.query(queryText_updateEvent, [values.at(0), values.at(values.length - 1)]);
 
