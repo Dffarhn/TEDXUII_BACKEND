@@ -41,6 +41,7 @@ const Notification_Transaction_Event = (req, res) => {
     const receivedJson = req.body
     console.log(receivedJson);
     const info_payment = NotificationPayment(receivedJson)
+    console.log(info_payment);
 
   } catch (error) {
     

@@ -69,6 +69,8 @@ function MidtransPayment(data) {
 
 function NotificationPayment(data) {
 
+  return new Promise((resolve, reject) => {
+
   apiClient.transaction.notification(data)
     .then((statusResponse)=>{
         let orderId = statusResponse.order_id;
@@ -77,11 +79,11 @@ function NotificationPayment(data) {
         
         console.log(`Transaction notification received. Order ID: ${orderId}. Transaction status: ${transactionStatus}. Fraud status: ${fraudStatus}`);
 
-        return statusResponse;
+        resolve (statusResponse);
         // Sample transactionStatus handling logic
 
       });
-      
+  })
 }
 
 function CancelPayment(data) {
