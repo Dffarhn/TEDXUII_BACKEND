@@ -55,6 +55,15 @@ function MakePaymentData(data) {
       phone_number: data.buyer_details[0].phone_number,
       address: data.buyer_details[0].address,
     },
+    expiry: {
+      start_time: data.created_at,
+      unit: "hours",
+      duration: 2
+    },
+    page_expiry: {
+      duration: 2,
+      unit: "hours"
+    },
   };
 
   console.log(PaymentData)

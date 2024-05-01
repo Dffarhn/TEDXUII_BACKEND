@@ -11,19 +11,6 @@ async function Midtrans_Payment (dataDB){
     const data_transaction = MakePaymentData(data)
     console.log(data_transaction);
 
-    
-
-    //generate order id lalu masukkan ke const data di paling awal
-    // data.order_id = uuidv4()//gaperlu
-
-
-    // data.gross_amount = parseInt(data.detail_data.price, 10)*parseInt(data.detail_data.quantity, 10);
-    // console.log(data)
-
-
-
-    // const data_order = updateParametersData(data)
-
     const respones_midtrans = await MidtransPayment(data_transaction); // Memanggil fungsi MidtransPayment secara asynchronous
     if (respones_midtrans) {
       return respones_midtrans// Mengirimkan URL redirect sebagai respons
