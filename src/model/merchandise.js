@@ -23,7 +23,7 @@ async function GetAllMerchandise(sort = null, name = null) {
 async function GetSpesificMerchandiseById(id) {
   try {
     if (validatorUUID(id)) {
-      const { rows } = await pool.query("SELECT * FROM Merchandise WHERE id_merchandise = $1", [id]);
+      const { rows } = await pool.query("SELECT * FROM Merchandise WHERE id = $1", [id]);
       console.log(rows);
       return rows;
     } else {
@@ -70,7 +70,7 @@ async function AddMerchandiseDB(data) {
     if (check_input_string) {
       // Use parameterized query to prevent SQL injection
       const queryText = `
-        INSERT INTO public.merchandise(name_merchandise, stock_merchandise, price_merchandise)
+        INSERT INTO public.merchandise(name, stock, price)
         VALUES ($1, $2, $3)
          RETURNING *;
        `;
@@ -128,7 +128,7 @@ async function UpdateMerchadiseDB(data) {
       const queryText = `
       UPDATE public.merchandise
       SET ${updateQuery}
-      WHERE id_merchandise=$${values.length};
+      WHERE id=$${values.length};
       `;
 
       // Tambahkan id_event ke values array
@@ -137,10 +137,10 @@ async function UpdateMerchadiseDB(data) {
       console.log("Values:", values);
       // Execute your database update query using the queryText and values
       // Example:
-      // const rows = await pool.query(queryText, values);
+      const rows = await pool.query(queryText, values);
 
       // Return success message or updated data
-      console.log(rows.rowCount);
+      // console.log(rows.rowCount);
       return rows;
     } else {
       // Tidak ada kolom yang akan diupdate karena semua nilainya null
@@ -160,7 +160,7 @@ async function DeleteMerchandiseDB(id_merchandise) {
     const query = `
 
     DELETE FROM public.merchandise
-	    WHERE id_merchandise = $1;
+	    WHERE id = $1;
     
     `;
     const { rows } = await pool.query(query, data);

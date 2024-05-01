@@ -34,7 +34,7 @@ const Get_Event = async (req, res) => {
 const Add_Event = async (req, res) => {
   try {
     const data = req.body;
-    const require = ["name_event", "price", "category", "year"];
+    const require = ["name", "price", "category", "year"];
 
     const check = validateRequestBody(data, require);
     // console.log(`checkvalid = ${check}`);
@@ -64,13 +64,16 @@ const Update_Event = async (req, res) => {
     }
     const data = {
       id_event: data_id.id_event || null,
-      name_event: data_update.name_event || null,
+      name: data_update.name || null,
       price: data_update.price || null,
       category: data_update.category || null,
       year: data_update.year || null,
     };
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([key, value]) => value !== null)
+    );
 
-    const hasil_update = await UpdateEventDB(data);
+    const hasil_update = await UpdateEventDB(filteredData);
     if (hasil_update) {
       res.status(200).send({ msg: "Update Success", data: hasil_update });
     }

@@ -3,7 +3,7 @@ const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, valida
 
 async function GetAllBundling(sort = null, name = null) {
   let queryString =
-    "SELECT b.*,json_agg(m.*) AS items_details FROM bundling b JOIN merchandise m ON m.id_merchandise = ANY(b.list_bundling) GROUP BY b.id_bundling, b.name_bundling, b.stock_bundling, b.price_bundling, b.list_bundling, b.created_at";
+    "SELECT b.*,json_agg(m.*) AS items_details FROM bundling b JOIN merchandise m ON m.id = ANY(b.list_bundling) GROUP BY b.id, b.name, b.stock, b.price, b.list_bundling, b.created_at";
   let queryParams = [];
 
   // Check if filtering by name is specified
@@ -25,7 +25,7 @@ async function GetSpesificBundlingById(id) {
   try {
     if (validatorUUID(id)) {
       const { rows } = await pool.query(
-        "SELECT b.*,json_agg(m.*) AS items_details FROM bundling b JOIN merchandise m ON m.id_merchandise = ANY(b.list_bundling) WHERE b.id_bundling = $1 GROUP BY b.id_bundling, b.name_bundling, b.stock_bundling, b.price_bundling, b.list_bundling, b.created_at",
+        "SELECT b.*,json_agg(m.*) AS items_details FROM bundling b JOIN merchandise m ON m.id= ANY(b.list_bundling) WHERE b.id = $1 GROUP BY b.id, b.name, b.stock, b.price, b.list_bundling, b.created_at",
         [id]
       );
       console.log(rows);
@@ -75,7 +75,7 @@ async function AddBundlingDB(data) {
     if (check_input_string) {
       // Use parameterized query to prevent SQL injection
       const queryText = `
-    INSERT INTO public.bundling(name_bundling, stock_bundling, price_bundling, list_bundling)
+    INSERT INTO public.bundling(name, stock, price, list_bundling)
     VALUES ($1, $2, $3, ARRAY(SELECT unnest($4::text[])::uuid))
     RETURNING *;
 `;
@@ -158,7 +158,7 @@ async function UpdateBundlingDB(data) {
       const queryText = `
       UPDATE public.bundling
       SET ${updateQuery}
-      WHERE id_bundling=$${values.length};
+      WHERE id=$${values.length};
       `;
 
       // Tambahkan id_event ke values array
@@ -190,7 +190,7 @@ async function DeleteBundlingDB(id_bundlingg) {
     const query = `
 
     DELETE FROM public.bundling
-	    WHERE id_bundling = $1;
+	    WHERE id = $1;
     
     `;
     const { rows } = await pool.query(query, data);

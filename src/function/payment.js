@@ -95,6 +95,15 @@ function CancelPayment(data) {
   }) 
 }
 
+function ExpiredPayment(data) {
+  return new Promise((resolve, reject) => {
+    apiClient.transaction.expire(data.id_transaction)
+    .then((response)=>{
+        resolve(response)
+    });
+  }) 
+}
+
 function Cek_Notification(data) {
 
   const transactionStatus = data.transaction_status
@@ -111,4 +120,4 @@ function Cek_Notification(data) {
   }
 }
 
-module.exports = {MidtransPayment,NotificationPayment,CancelPayment,Cek_Notification}
+module.exports = {MidtransPayment,NotificationPayment,CancelPayment,Cek_Notification,ExpiredPayment}

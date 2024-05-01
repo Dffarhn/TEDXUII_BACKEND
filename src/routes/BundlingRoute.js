@@ -65,9 +65,9 @@ const Update_Bundling = async (req, res) => {
     }
     const data = {
       id_bundling: data_id.id_bundling || null,
-      name_bundling: data_update.name_bundling || null,
-      price_bundling : data_update.price_bundling || null,
-      stock_bundling: data_update.stock_bundling || null,
+      name: data_update.name || null,
+      price : data_update.price || null,
+      stock: data_update.stock || null,
       list_bundling: data_update.list_bundling || null
     };
     const filteredData = Object.fromEntries(

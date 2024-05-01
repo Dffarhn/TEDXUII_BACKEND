@@ -1,14 +1,14 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
 
-async function GetSpesificTransactionById(id) {
+async function GetSpesificTransactionMerchandiseById(id) {
   try {
     console.log(id);
     const { rows } = await pool.query(
       `
-      SELECT te.* , json_agg(e.*) AS event_details, json_agg(b.*) AS buyer_details
-      FROM transaction_event te
-      JOIN event e ON e.id_event = te.event_id
+      SELECT te.* , json_agg(m.*) AS merchandise_details, json_agg(b.*) AS buyer_details
+      FROM transaction_merchandise te
+      JOIN merchandise m ON m.id_merchandise = te.merchandise_id
       JOIN buyer b ON b.id_buyer = te.buyer_id
       WHERE te.id = $1
 	    GROUP BY te.id, te.gross_amount,te.status,te.quantity`,
@@ -20,16 +20,16 @@ async function GetSpesificTransactionById(id) {
   }
 }
 
-async function AddEventTransactionDB(data, data_event, data_buyer) {
+async function AddMerchandiseTransactionDB(data, data_merchandise, data_buyer) {
   try {
-    console.log(data_event.stock);
-    const { id_event, quantity } = data;
+    console.log(data_merchandise.stock);
+    const { id_merchandise, quantity } = data;
 
-    if (data_event.stock > 0 && data_event.stock >= quantity) {
+    if (data_merchandise.stock > 0 && data_merchandise.stock >= quantity) {
       console.log("hitascsacasc");
 
-      const Main_Data = [id_event, data_buyer.id_buyer, quantity];
-      const dataString = [id_event, data_buyer.id_buyer];
+      const Main_Data = [id_merchandise, data_buyer.id_buyer, quantity];
+      const dataString = [id_merchandise, data_buyer.id_buyer];
       //check uuid
       dataString.forEach((element) => {
         if (!validatorUUID(element)) {
@@ -48,23 +48,23 @@ async function AddEventTransactionDB(data, data_event, data_buyer) {
         throw new Error();
       }
 
-      const gross_amount = data_event.price * quantity;
+      const gross_amount = data_merchandise.price * quantity;
       Main_Data.push(gross_amount);
 
       // status
       // pending, failed, completed
       if (check_input_string) {
-        Main_Data.push(data_event.stock - quantity);
+        Main_Data.push(data_merchandise.stock - quantity);
         // Use parameterized query to prevent SQL injection
         const queryText_transaction = `
-        INSERT INTO public.transaction_event(event_id, buyer_id, quantity, gross_amount, status)
+        INSERT INTO public.transaction_merchandise(merchandise_id, buyer_id, quantity, gross_amount, status)
         VALUES ($1, $2, $3, $4,$5 )
         RETURNING *;
           `;
 
-        const queryText_updateEvent = `UPDATE public.event 
+        const queryText_updateEvent = `UPDATE public.merchandise 
           SET stock = $2 
-          Where id_event = $1;
+          Where id_merchandise = $1;
           `;
 
         const values = Main_Data;
@@ -77,7 +77,7 @@ async function AddEventTransactionDB(data, data_event, data_buyer) {
 
         if (rows) {
           console.log(rows[0].id);
-          const dataSpesific = await GetSpesificTransactionById(rows[0].id);
+          const dataSpesific = await GetSpesificTransactionMerchandiseById(rows[0].id);
 
           console.log("HITTTTTTTTTTTTTTTTTTTTTTTTT")
           return dataSpesific;
@@ -94,17 +94,17 @@ async function AddEventTransactionDB(data, data_event, data_buyer) {
   }
 }
 
-async function UpdateEventTransactionDB(id,status_data){
+async function UpdateMerchandiseTransactionDB(id,status_data){
   try {
     const values = [status_data,id]
 
     const queryText = `
-      UPDATE public.transaction_event
+      UPDATE public.transaction_merchandise
       SET status = $1
       WHERE id=$${values.length};
       `;
 
-      // Tambahkan id_event ke values array
+      // Tambahkan id_merchandise ke values array
 
       console.log("Update query:", queryText);
       console.log("Values:", values);
@@ -120,4 +120,4 @@ async function UpdateEventTransactionDB(id,status_data){
 
 }
 
-module.exports = { AddEventTransactionDB, GetSpesificTransactionById, UpdateEventTransactionDB };
+module.exports = { AddMerchandiseTransactionDB, GetSpesificTransactionMerchandiseById, UpdateMerchandiseTransactionDB };

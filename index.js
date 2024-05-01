@@ -31,7 +31,7 @@ app.get('/test', async (req, res) => {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// app.use(AccessApi);
+app.use(AccessApi);
 
 app.use(route);
 

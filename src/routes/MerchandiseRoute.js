@@ -64,9 +64,9 @@ const Update_Merchandise = async (req, res) => {
     }
     const data = {
       id_merchandise: data_id.id_merchandise || null,
-      name_merchandise: data_update.name_merchandise || null,
-      price_merchandise : data_update.price_merchandise || null,
-      stock_merchandise: data_update.stock_merchandise || null,
+      name: data_update.name || null,
+      price : data_update.price || null,
+      stock: data_update.stock || null,
     };
 
     const filteredData = Object.fromEntries(

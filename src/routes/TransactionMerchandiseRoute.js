@@ -2,22 +2,23 @@ const pool = require("../../db_connect.js");
 const { validateRequestBody } = require("../function/Validator");
 const { NotificationPayment, CancelPayment, Cek_Notification, ExpiredPayment } = require("../function/payment.js");
 const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/transaction");
+const { AddMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
 
-const Add_Transaction_Event = async(req,res)=>{
+const Add_Transaction_merchandise = async(req,res)=>{
     try {
         const data = req.body;
-        const data_event = req.data_event;
+        const data_merchandise = req.data_merchandise;
         const data_buyer = req.data_buyer;
 
-        const require = ["id_event", "username","email","phone_number","address","quantity"];
+        const require = ["id_merchandise", "username","email","phone_number","address","quantity"];
 
         const check = validateRequestBody(data, require);
         // console.log(`checkvalid = ${check}`);
     
         if (check) {
           await pool.query("BEGIN")
-          const add_data = await AddEventTransactionDB(data,data_event,data_buyer);
+          const add_data = await AddMerchandiseTransactionDB(data,data_merchandise,data_buyer);
           if (add_data) {
             const payment = await Midtrans_Payment(add_data)
             console.log(payment)
@@ -40,7 +41,7 @@ const Add_Transaction_Event = async(req,res)=>{
 }
 
 
-const Notification_Transaction_Event = async (req, res) => {
+const Notification_Transaction_merchandise = async (req, res) => {
 
   try {
     const receivedJson = req.body
@@ -51,8 +52,8 @@ const Notification_Transaction_Event = async (req, res) => {
       const update_event_transaction = Cek_Notification(info_payment)
 
       if (update_event_transaction !== "pending" || update_event_transaction !== "unknown") {
-        const update_transaction_event_toDB = UpdateEventTransactionDB(parseInt(info_payment.order_id,10), update_event_transaction)  
-        console.log(update_transaction_event_toDB);      
+        const update_transaction_merchandise_toDB = UpdateEventTransactionDB(parseInt(info_payment.order_id,10), update_event_transaction)  
+        console.log(update_transaction_merchandise_toDB);      
       }
       
     }
@@ -64,7 +65,7 @@ const Notification_Transaction_Event = async (req, res) => {
 }
 
 
-const Cancel_Transaction_Event = async (req,res) => {
+const Cancel_Transaction_merchandise = async (req,res) => {
   try {
     const data = req.body
 
@@ -78,7 +79,7 @@ const Cancel_Transaction_Event = async (req,res) => {
     
   }
 }
-const Expired_Transaction_Event = async (req,res) => {
+const Expired_Transaction_merchandise = async (req,res) => {
   try {
     const data = req.body
 
@@ -94,4 +95,4 @@ const Expired_Transaction_Event = async (req,res) => {
   }
 }
 
-module.exports = {Add_Transaction_Event, Notification_Transaction_Event,Cancel_Transaction_Event,Expired_Transaction_Event};
+module.exports = {Add_Transaction_merchandise, Notification_Transaction_merchandise,Cancel_Transaction_merchandise,Expired_Transaction_merchandise};

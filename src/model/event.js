@@ -20,7 +20,7 @@ async function GetAllEvent(sort = null, year = null, name = null) {
   // Check if filtering by name is specified
   if (name) {
     queryString += queryParams.length === 0 ? " WHERE" : " AND";
-    queryString += ` name_event LIKE '%' || $${queryParams.length + 1} || '%'`;
+    queryString += ` name LIKE '%' || $${queryParams.length + 1} || '%'`;
     queryParams.push(name);
   }
 
@@ -41,7 +41,7 @@ async function GetAllEvent(sort = null, year = null, name = null) {
 async function GetSpesificEventById(id) {
   try {
     if (validatorUUID(id)) {
-      const { rows } = await pool.query("SELECT * FROM Event WHERE id_event = $1", [id]);
+      const { rows } = await pool.query("SELECT * FROM Event WHERE id = $1", [id]);
       // console.log(rows[0]);
       return rows;
     } else {
@@ -61,11 +61,11 @@ async function GetSpesificEventById(id) {
 
 async function AddEventDB(data) {
   try {
-    const { name_event, price, category, year } = data;
+    const { name, price, category, year } = data;
 
-    const Main_Data = [name_event, price, category, year];
+    const Main_Data = [name, price, category, year];
 
-    const dataString = [name_event, year];
+    const dataString = [name, year];
 
     const check_input_string = validateNoSpacesArray(dataString);
 
@@ -80,7 +80,7 @@ async function AddEventDB(data) {
     if (check_input_integer && check_input_string) {
       // Use parameterized query to prevent SQL injection
       const queryText = `
-         INSERT INTO event(name_event, price, category, year)
+         INSERT INTO event(name, price, category, year)
          VALUES ($1, $2, $3, $4)
          RETURNING *;
        `;
@@ -139,7 +139,7 @@ async function UpdateEventDB(data) {
       const queryText = `
       UPDATE public.event
       SET ${updateQuery}
-      WHERE id_event=$${values.length};
+      WHERE id=$${values.length};
       `;
 
       // Tambahkan id_event ke values array
@@ -171,7 +171,7 @@ async function DeleteEventDB(id_event) {
     const query = `
 
     DELETE FROM public.event
-	    WHERE id_event = $1;
+	    WHERE id = $1;
     
     `;
     const { rows } = await pool.query(query, data);
