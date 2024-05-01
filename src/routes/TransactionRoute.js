@@ -1,6 +1,6 @@
 const { validateRequestBody } = require("../function/Validator");
-const { NotificationPayment, CancelPayment } = require("../function/payment.js");
-const { AddEventTransactionDB } = require("../model/transaction");
+const { NotificationPayment, CancelPayment, Cek_Notification } = require("../function/payment.js");
+const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/transaction");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
 
 const Add_Transaction_Event = async(req,res)=>{
@@ -35,13 +35,21 @@ const Add_Transaction_Event = async(req,res)=>{
 }
 
 
-const Notification_Transaction_Event = (req, res) => {
+const Notification_Transaction_Event = async (req, res) => {
 
   try {
     const receivedJson = req.body
     console.log(receivedJson);
-    const info_payment = NotificationPayment(receivedJson)
-    console.log(info_payment);
+    const info_payment = await NotificationPayment(receivedJson)
+
+    if (info_payment) {
+      const update_event_transaction = Cek_Notification(info_payment)
+
+      if (update_event_transaction !== "pending" || update_event_transaction !== "unknown") {
+        const update_transaction_event_toDB = UpdateEventTransactionDB(parseInt(info_payment.order_id,10), update_event_transaction)        
+      }
+      
+    }
 
   } catch (error) {
     
