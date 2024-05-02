@@ -6,8 +6,7 @@ const { GetSpesificEventById } = require("../model/event.js");
 async function Midtrans_Payment (dataDB){
   try {
     const data = dataDB[0];
-    console.log(data);
-
+    
     const data_transaction = MakePaymentData(data)
     console.log(data_transaction);
 

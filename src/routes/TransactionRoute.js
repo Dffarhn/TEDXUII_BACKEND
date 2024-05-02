@@ -2,6 +2,8 @@ const pool = require("../../db_connect.js");
 const { validateRequestBody } = require("../function/Validator");
 const { NotificationPayment, CancelPayment, Cek_Notification, ExpiredPayment } = require("../function/payment.js");
 const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/transaction");
+const { UpdatebundlingTransactionDB } = require("../model/transactionBundling.js");
+const { UpdateMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
 
 const Add_Transaction_Event = async(req,res)=>{
@@ -18,9 +20,9 @@ const Add_Transaction_Event = async(req,res)=>{
         if (check) {
           await pool.query("BEGIN")
           const add_data = await AddEventTransactionDB(data,data_event,data_buyer);
+          add_data[0].category = 'event'
           if (add_data) {
             const payment = await Midtrans_Payment(add_data)
-            console.log(payment)
             if (payment) {
               await pool.query("COMMIT")
               res.status(201).send({ msg: "Sucessfully added", data: add_data ,payment: payment });
@@ -48,11 +50,20 @@ const Notification_Transaction_Event = async (req, res) => {
     const info_payment = await NotificationPayment(receivedJson)
 
     if (info_payment) {
-      const update_event_transaction = Cek_Notification(info_payment)
+      const update_transaction = Cek_Notification(info_payment)
 
-      if (update_event_transaction !== "pending" || update_event_transaction !== "unknown") {
-        const update_transaction_event_toDB = UpdateEventTransactionDB(parseInt(info_payment.order_id,10), update_event_transaction)  
-        console.log(update_transaction_event_toDB);      
+      if (update_transaction !== "pending" || update_transaction !== "unknown") {
+        if(info_payment.custom_field1 ==="event"){
+
+          const update_transaction_event_toDB = UpdateEventTransactionDB(info_payment.order_id, update_transaction)  
+          console.log(update_transaction_event_toDB);      
+        }else if(info_payment.custom_field1 ==="merchandise"){
+          const update_transaction_Merchandise_toDB = UpdateMerchandiseTransactionDB(info_payment.order_id, update_transaction)  
+          console.log(update_transaction_Merchandise_toDB); 
+        }else if(info_payment.custom_field1 ==="bundling"){
+          const update_transaction_bundling_toDB = UpdatebundlingTransactionDB(info_payment.order_id, update_transaction)  
+          console.log(update_transaction_bundling_toDB); 
+        }
       }
       
     }

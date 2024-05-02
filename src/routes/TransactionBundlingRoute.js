@@ -20,6 +20,7 @@ const Add_Transaction_Bundling = async(req,res)=>{
         if (check) {
           await pool.query("BEGIN")
           const add_data = await AddbundlingTransactionDB(data,data_Bundling,data_buyer);
+          add_data[0].category = 'bundling'
           if (add_data) {
             const payment = await Midtrans_Payment(add_data)
             console.log(payment)

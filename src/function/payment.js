@@ -15,7 +15,8 @@ let apiClient = new midtransClient.Snap({
 
 function MidtransPayment(data) {
   return new Promise((resolve, reject) => {
-    const {order_id,gross_amount,detail_data,detail_customer,created_at} = data
+    const {order_id,gross_amount,detail_data,detail_customer,created_at,custom_field1} = data
+    console.log(custom_field1)
 
     let parameter = {
       transaction_details: {
@@ -52,6 +53,8 @@ function MidtransPayment(data) {
         "duration": 2,
         "unit": "hours"
       },
+
+      custom_field1: custom_field1
 
     }
 

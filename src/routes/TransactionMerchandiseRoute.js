@@ -19,6 +19,7 @@ const Add_Transaction_merchandise = async(req,res)=>{
         if (check) {
           await pool.query("BEGIN")
           const add_data = await AddMerchandiseTransactionDB(data,data_merchandise,data_buyer);
+          add_data[0].category = 'merchandise'
           if (add_data) {
             const payment = await Midtrans_Payment(add_data)
             console.log(payment)

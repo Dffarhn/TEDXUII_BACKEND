@@ -4,11 +4,11 @@ dotenv.config();
 
 // Buat objek konfigurasi koneksi
 const pool = new Pool({
-    user: process.env.USER_DB,
-    host: process.env.HOST_DB,
-    database: process.env.DB_NAME,
-    password: process.env.PASSWORD_DB,
-    port: process.env.PORT_DB, // Port default PostgreSQL
+    user: process.env.USER_DB_PROD,
+    host: process.env.HOST_DB_PROD,
+    database: process.env.DB_NAME_PROD,
+    password: process.env.PASSWORD_DB_PROD,
+    port: process.env.PORT_DB_PROD, // Port default PostgreSQL
 });
 
 // Uji koneksi ke database

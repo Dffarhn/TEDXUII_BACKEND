@@ -5,6 +5,7 @@ const { validateNumber, validateEmail, validateNoSpacesArray } = require("../fun
 function MakePaymentData(data) {
   const StringInput = [
     data.id,
+    data.category,
     data.buyer_details[0].username,
     data.buyer_details[0].address,
     data.data_details[0].id,
@@ -62,6 +63,7 @@ function MakePaymentData(data) {
       duration: 2,
       unit: "hours"
     },
+    custom_field1: data.category
   };
 
   console.log(PaymentData)
