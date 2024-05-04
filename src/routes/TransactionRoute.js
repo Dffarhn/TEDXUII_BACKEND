@@ -1,5 +1,4 @@
 const pool = require("../../db_connect.js");
-const { Mutex } = require("async-mutex");
 const { validateRequestBody } = require("../function/Validator");
 const { NotificationPayment, CancelPayment, Cek_Notification, ExpiredPayment } = require("../function/payment.js");
 const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/transaction");
@@ -11,39 +10,38 @@ const { releaseLock } = require("../function/mutexManager.js");
 const Add_Transaction_Event = async (req, res) => {
   const lock = req.paymentLock;
   try {
-    const data = req.body;
-    const data_event = req.data_event;
-    const data_buyer = req.data_buyer;
+      const data = req.body;
+      const data_event = req.data_event;
+      const data_buyer = req.data_buyer;
 
-    const require = ["id_event", "username", "email", "phone_number", "address", "quantity"];
+      const require = ["id_event", "username", "email", "phone_number", "address", "quantity"];
 
-    const check = validateRequestBody(data, require);
-    // console.log(`checkvalid = ${check}`);
+      const check = validateRequestBody(data, require);
 
-    if (check) {
-
-        await pool.query("BEGIN");
-        const add_data = await AddEventTransactionDB(data, data_event, data_buyer);
-        add_data[0].category = "event";
-        if (add_data) {
-          const payment = await Midtrans_Payment(add_data);
-          if (payment) {
-            await pool.query("COMMIT");
-            releaseLock(lock, 'payment1');
-            res.status(201).send({ msg: "Sucessfully added", data: add_data, payment: payment });
+      if (check) {
+          await pool.query("BEGIN");
+          const add_data = await AddEventTransactionDB(data, data_event, data_buyer);
+          add_data[0].category = "event";
+          if (add_data) {
+              const payment = await Midtrans_Payment(add_data);
+              if (payment) {
+                  await pool.query("COMMIT");
+                  res.status(201).send({ msg: "Successfully added", data: add_data, payment: payment });
+              }
           }
-        }
-      
-    } else {
-      await pool.query("ROLLBACK");
-      releaseLock(lock, 'payment1');
-      res.status(500).send({ msg: "your data is not valid" });
-    }
+      } else {
+          await pool.query("ROLLBACK");
+          res.status(500).send({ msg: "Your data is not valid" });
+      }
   } catch (error) {
-    await pool.query("ROLLBACK");
-    releaseLock(lock, 'payment1');
-    console.log(error);
-    res.status(500).send({ msg: "internal server error" });
+      await pool.query("ROLLBACK");
+      console.log(error);
+      res.status(500).send({ msg: "Internal server error" });
+  } finally {
+      // Release the lock
+      if (lock) {
+          releaseLock(lock, 'payment1');
+      }
   }
 };
 

@@ -4,27 +4,26 @@ const { GetSpesificEventById } = require("../model/event");
 
 
 const CheckEvent = async (req, res, next) => {
-    try {
-        // Acquire the mutex lock
-        const lock = await acquireLock('payment1');
-        const { id_event } = req.body;
-        const data = await GetSpesificEventById(id_event);
+  try {
+      // Acquire the mutex lock
+      const lock = await acquireLock('payment1');
+      const { id_event } = req.body;
+      const data = await GetSpesificEventById(id_event);
 
-        if (data.length > 0) {
-            req.data_event = data[0];
-            // Release the mutex lock before calling next()
-          req.paymentLock = lock
-            next();
-        } else {
-          releaseLock(lock, 'payment1');
-            // Release the mutex lock before sending the response
-            res.status(404).send({ msg: "Data tidak ditemukan" });
-        }
-    } catch (error) {
-        // Release the mutex lock before sending the response
-        console.error("Error in CheckEvent middleware:", error);
-        res.status(500).send({ msg: "Internal Server Error" });
-    }
+      if (data.length > 0) {
+          req.data_event = data[0];
+          // Assign the lock to req.paymentLock
+          req.paymentLock = lock;
+          next();
+      } else {
+          // Release the lock and send response
+          res.status(404).send({ msg: "Data tidak ditemukan" });
+      }
+  } catch (error) {
+      // Release the lock and send response
+      console.error("Error in CheckEvent middleware:", error);
+      res.status(500).send({ msg: "Internal Server Error" });
+  }
 };
 
 const Add_Buyer = async(req, res,next) => {
