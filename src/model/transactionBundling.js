@@ -1,6 +1,7 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
-const { UpdateBundlingDB } = require("./bundling.js");
+const { sendEmail } = require("../function/mailjet.js");
+const { UpdateBundlingDB, GetSpesificBundlingById } = require("./bundling.js");
 
 async function GetSpesificTransactionbundlingById(id) {
   try {
@@ -131,6 +132,12 @@ async function UpdatebundlingTransactionDB(id,status_data){
         };
 
         const update_failed_payment = await UpdateBundlingDB(data)
+      }else{
+        const transaction_completed = await GetSpesificBundlingById(id)
+
+        const sendMail = sendEmail(transaction_completed[0])
+        return rows
+
       }
       
       return rows

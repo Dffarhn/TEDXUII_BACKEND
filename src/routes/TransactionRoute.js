@@ -6,10 +6,10 @@ const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/tr
 const { UpdatebundlingTransactionDB } = require("../model/transactionBundling.js");
 const { UpdateMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
-const Mutex = require('async-mutex').Mutex;
+const {Mutex} = require('async-mutex');
 
+const mutex = new Mutex();
 const Add_Transaction_Event = async (req, res) => {
-  const mutex = new Mutex();
   const release = await mutex.acquire();
 
   try {
@@ -17,10 +17,8 @@ const Add_Transaction_Event = async (req, res) => {
 
       
       const data_event = await CheckEvent(req)
-
-      console.log(data_event)
       const data_buyer = await Add_Buyer(req);
-      console.log(data_buyer)
+    
 
       const require = ["id_event", "username", "email", "phone_number", "address", "quantity"];
 

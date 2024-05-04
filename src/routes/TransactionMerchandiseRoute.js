@@ -5,13 +5,16 @@ const { NotificationPayment, CancelPayment, Cek_Notification, ExpiredPayment } =
 const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/transaction");
 const { AddMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
+const { CheckMerchandise } = require("../middleware/transactionMidMerchandise.js");
 const mutex = new Mutex();
 
 const Add_Transaction_merchandise = async (req, res) => {
+  const release = await mutex.acquire();
   try {
     const data = req.body;
-    const data_merchandise = req.data_merchandise;
-    const data_buyer = req.data_buyer;
+
+    const data_merchandise = await CheckMerchandise(req)
+      const data_buyer = await Add_Buyer(req);
 
     const require = ["id_merchandise", "username", "email", "phone_number", "address", "quantity"];
 
@@ -19,23 +22,18 @@ const Add_Transaction_merchandise = async (req, res) => {
     // console.log(`checkvalid = ${check}`);
 
     if (check) {
-      const release = await mutex.acquire();
-
-      try {
-        await pool.query("BEGIN");
-        const add_data = await AddMerchandiseTransactionDB(data, data_merchandise, data_buyer);
-        add_data[0].category = "merchandise";
-        if (add_data) {
-          const payment = await Midtrans_Payment(add_data);
-          console.log(payment);
-          if (payment) {
-            await pool.query("COMMIT");
-            res.status(201).send({ msg: "Sucessfully added", data: add_data, payment: payment });
-          }
+      await pool.query("BEGIN");
+      const add_data = await AddMerchandiseTransactionDB(data, data_merchandise, data_buyer);
+      add_data[0].category = "merchandise";
+      if (add_data) {
+        const payment = await Midtrans_Payment(add_data);
+        console.log(payment);
+        if (payment) {
+          await pool.query("COMMIT");
+          res.status(201).send({ msg: "Sucessfully added", data: add_data, payment: payment });
         }
-      } finally {
-        release();
       }
+
       // Acquire the mutex lock
     } else {
       await pool.query("ROLLBACK");
@@ -45,6 +43,8 @@ const Add_Transaction_merchandise = async (req, res) => {
     await pool.query("ROLLBACK");
     console.log(error);
     res.status(500).send({ msg: "internal server error" });
+  } finally {
+    release();
   }
 };
 

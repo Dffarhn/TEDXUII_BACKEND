@@ -1,5 +1,7 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
+const { sendEmail } = require("../function/mailjet.js");
+const { UpdateMerchadiseDB } = require("./merchandise.js");
 
 async function GetSpesificTransactionMerchandiseById(id) {
   try {
@@ -129,7 +131,16 @@ async function UpdateMerchandiseTransactionDB(id,status_data){
           stock : stock_rollback
         };
 
-        const update_failed_payment = await UpdateBundlingDB(data)
+        const update_failed_payment = await UpdateMerchadiseDB(data)
+        return rows
+      }else{
+
+        const transaction_completed = await GetSpesificTransactionMerchandiseById(id)
+
+        const sendMail = sendEmail(transaction_completed[0])
+        return rows
+
+        
       }
       
       return rows
