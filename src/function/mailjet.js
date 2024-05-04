@@ -22,7 +22,7 @@ async function sendEmail(data) {
           },
           To: [
             {
-              Email: "d.raihan2004@gmail.com",
+              Email: data.buyer_details[0].email,
               Name: data.buyer_details[0].username,
             },
           ],
