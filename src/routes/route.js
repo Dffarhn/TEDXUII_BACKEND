@@ -54,38 +54,7 @@ route.post("/transaction/bundling",Add_Buyer,CheckBundling, Add_Transaction_Bund
 route.post("/transaction/merchandise",Add_Buyer,CheckMerchandise, Add_Transaction_merchandise);
 
 //route transaction event
-// route.post("/transaction/event",Add_Buyer,CheckEvent, Add_Transaction_Event);
-
-const { Mutex } = require('async-mutex');
-
-// Create a mutex to control access
-const mutex = new Mutex();
-
-// Handler for route /transaction/event
-route.post("/transaction/event", async (req, res, next) => {
-    try {
-        // Acquire lock before executing synchronized code
-        const release = await mutex.acquire();
-
-        try {
-            // Chain the middleware functions using promises for sequential execution
-            await Add_Buyer(req, res, next);
-            await CheckEvent(req, res, next);
-            await Add_Transaction_Event(req, res);
-        } catch (error) {
-            // Handle errors in sequential execution
-            console.error("Error processing transaction:", error);
-            res.status(500).send({ msg: "Internal server error" });
-        } finally {
-            // Release lock after synchronized execution
-            release();
-        }
-    } catch (error) {
-        // Handle errors in lock acquisition
-        console.error("Error acquiring lock:", error);
-        res.status(500).send({ msg: "Internal server error" });
-    }
-});
+route.post("/transaction/event",Add_Transaction_Event);
 
 
 

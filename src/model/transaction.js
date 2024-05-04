@@ -5,7 +5,7 @@ const { UpdateEventDB } = require("./event.js");
 
 async function GetSpesificTransactionById(id) {
   try {
-    console.log(id);
+    // console.log(id);
     const { rows } = await pool.query(
       `
       SELECT te.* , json_agg(e.*) AS data_details, json_agg(b.*) AS buyer_details
@@ -24,11 +24,11 @@ async function GetSpesificTransactionById(id) {
 
 async function AddEventTransactionDB(data, data_event, data_buyer) {
   try {
-    console.log(data_event.stock);
+    // console.log(data_event.stock);
     const { id_event, quantity } = data;
 
     if (data_event.stock > 0 && data_event.stock >= quantity) {
-      console.log("hitascsacasc");
+      // console.log("hitascsacasc");
 
       const Main_Data = [id_event, data_buyer.id_buyer, quantity];
       const dataString = [id_event, data_buyer.id_buyer];
@@ -70,7 +70,7 @@ async function AddEventTransactionDB(data, data_event, data_buyer) {
           `;
 
         const values = Main_Data;
-        console.log(values.slice(0, 4));
+        // console.log(values.slice(0, 4));
 
 
         // Execute the query using parameterized values
@@ -79,10 +79,10 @@ async function AddEventTransactionDB(data, data_event, data_buyer) {
         await pool.query(queryText_updateEvent, [values.at(0), values.at(values.length - 1)]);
 
         if (rows) {
-          console.log(rows[0].id);
+          // console.log(rows[0].id);
           const dataSpesific = await GetSpesificTransactionById(rows[0].id);
 
-          console.log("HITTTTTTTTTTTTTTTTTTTTTTTTT")
+          // console.log("HITTTTTTTTTTTTTTTTTTTTTTTTT")
           return dataSpesific;
         }
       } else {

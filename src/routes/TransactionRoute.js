@@ -1,16 +1,26 @@
 const pool = require("../../db_connect.js");
 const { validateRequestBody } = require("../function/Validator");
 const { NotificationPayment, CancelPayment, Cek_Notification, ExpiredPayment } = require("../function/payment.js");
+const { CheckEvent, Add_Buyer } = require("../middleware/transactionMid.js");
 const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/transaction");
 const { UpdatebundlingTransactionDB } = require("../model/transactionBundling.js");
 const { UpdateMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
+const Mutex = require('async-mutex').Mutex;
 
 const Add_Transaction_Event = async (req, res) => {
+  const mutex = new Mutex();
+  const release = await mutex.acquire();
+
   try {
       const data = req.body;
-      const data_event = req.data_event;
-      const data_buyer = req.data_buyer;
+
+      
+      const data_event = await CheckEvent(req)
+
+      console.log(data_event)
+      const data_buyer = await Add_Buyer(req);
+      console.log(data_buyer)
 
       const require = ["id_event", "username", "email", "phone_number", "address", "quantity"];
 
@@ -35,6 +45,8 @@ const Add_Transaction_Event = async (req, res) => {
       await pool.query("ROLLBACK");
       console.log(error);
       res.status(500).send({ msg: "Internal server error" });
+  } finally {
+    release();
   }
 };
 

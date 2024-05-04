@@ -8,7 +8,7 @@ async function Midtrans_Payment (dataDB){
     const data = dataDB[0];
     
     const data_transaction = MakePaymentData(data)
-    console.log(data_transaction);
+    // console.log(data_transaction);
 
     const respones_midtrans = await MidtransPayment(data_transaction); // Memanggil fungsi MidtransPayment secara asynchronous
     if (respones_midtrans) {

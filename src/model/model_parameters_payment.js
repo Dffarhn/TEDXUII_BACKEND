@@ -13,9 +13,9 @@ function MakePaymentData(data) {
     data.buyer_details[0].phone_number,
   ];
   
-  console.log(data)
+  // console.log(data)
 
-  console.log(StringInput);
+  // console.log(StringInput);
   
 
   const IntegerInput = [
@@ -66,7 +66,7 @@ function MakePaymentData(data) {
     custom_field1: data.category
   };
 
-  console.log(PaymentData)
+  // console.log(PaymentData)
 
   return PaymentData
   

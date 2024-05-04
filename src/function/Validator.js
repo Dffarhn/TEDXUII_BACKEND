@@ -5,10 +5,10 @@ function validateEmail(email) {
 }
 
 function validateNoSpacesArray(inputs) {
-  console.table(inputs)
+  // console.table(inputs)
   for (let input of inputs) {
     if (input.trim().length === 0) {
-      console.log(input)
+      // console.log(input)
       return false; // Return false if any input contains only whitespace characters
     }
   }
@@ -23,7 +23,7 @@ function validateNoSpaces(input) {
 
 function validateNumber(valueOrArray) {
   if (Array.isArray(valueOrArray)) {
-    console.log(valueOrArray)
+    // console.log(valueOrArray)
     // Regular expression to allow only digits
     const phoneRegex = /^[0-9]+$/;
     for (let i = 0; i < valueOrArray.length; i++) {
@@ -45,8 +45,8 @@ function validatorUUID(uuid) {
 }
 
 function validateRequestBody(body, requiredFields) {
-  console.log(body);
-  console.log(requiredFields);
+  // console.log(body);
+  // console.log(requiredFields);
   for (const field of requiredFields) {
 
     if (typeof body[field] === "string") {
