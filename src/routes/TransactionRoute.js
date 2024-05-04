@@ -57,7 +57,7 @@ const Notification_Transaction_Event = async (req, res) => {
     if (info_payment) {
       const update_transaction = Cek_Notification(info_payment);
 
-      if (update_transaction !== "pending" || update_transaction !== "unknown") {
+      if (update_transaction !== "pending" && update_transaction !== "unknown") {
         if (info_payment.custom_field1 === "event") {
           const update_transaction_event_toDB = await UpdateEventTransactionDB(info_payment.order_id, update_transaction);
           console.log(update_transaction_event_toDB);
