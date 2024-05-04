@@ -40,6 +40,7 @@ const Add_Merchandise = async (req, res) => {
     // console.log(`checkvalid = ${check}`);
 
     if (check) {
+      data.image_file = req.file.path
       const add_data = await AddMerchandiseDB(data);
       console.log(add_data);
       if (add_data) {
@@ -58,6 +59,7 @@ const Update_Merchandise = async (req, res) => {
   try {
     const data_update = req.body;
     const data_id = req.params;
+    data_update.image_file = req.file.path
 
     if (!validatorUUID(data_id.id_merchandise)) {
       throw new Error();
@@ -67,6 +69,7 @@ const Update_Merchandise = async (req, res) => {
       name: data_update.name || null,
       price : data_update.price || null,
       stock: data_update.stock || null,
+      image_merchandise : data_update.image_file || null
     };
 
     const filteredData = Object.fromEntries(

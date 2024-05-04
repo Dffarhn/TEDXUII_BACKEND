@@ -1,5 +1,7 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
+const { sendEmail } = require("../function/mailjet.js");
+const { UpdateEventDB } = require("./event.js");
 
 async function GetSpesificTransactionById(id) {
   try {
@@ -112,6 +114,33 @@ async function UpdateEventTransactionDB(id,status_data){
       // Execute your database update query using the queryText and values
       // Example:
       const rows = await pool.query(queryText, values);
+
+      if (status_data === "failed") {
+
+        const update_stock = await GetSpesificTransactionById(id)
+
+        const stock_failed =parseInt( update_stock[0].quantity,10)
+
+        const stock_now = parseInt(update_stock[0].data_details[0].stock,10)
+        
+        const stock_rollback = stock_now + stock_failed
+
+        const id_event = update_stock[0].data_details[0].id
+
+        const data = {
+          id_event: id_event,
+          stock : stock_rollback
+        };
+
+        const update_failed_payment = await UpdateEventDB(data)
+      }else{
+
+        const transaction_completed = await GetSpesificTransactionById(id)
+
+        const sendMail = sendEmail(transaction_completed[0])
+
+        
+      }
       
       return rows
   } catch (error) {

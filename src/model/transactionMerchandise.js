@@ -111,6 +111,26 @@ async function UpdateMerchandiseTransactionDB(id,status_data){
       // Execute your database update query using the queryText and values
       // Example:
       const rows = await pool.query(queryText, values);
+
+      if (status_data === "failed") {
+
+        const update_stock = await GetSpesificTransactionMerchandiseById(id)
+
+        const stock_failed =parseInt( update_stock[0].quantity,10)
+
+        const stock_now = parseInt(update_stock[0].data_details[0].stock,10)
+        
+        const stock_rollback = stock_now + stock_failed
+
+        const id_merchandise = update_stock[0].data_details[0].id
+
+        const data = {
+          id_merchandise: id_merchandise,
+          stock : stock_rollback
+        };
+
+        const update_failed_payment = await UpdateBundlingDB(data)
+      }
       
       return rows
   } catch (error) {

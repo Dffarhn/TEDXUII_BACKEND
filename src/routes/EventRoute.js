@@ -34,12 +34,13 @@ const Get_Event = async (req, res) => {
 const Add_Event = async (req, res) => {
   try {
     const data = req.body;
-    const require = ["name", "price", "category", "year"];
+    const require = ["name", "price", "category", "year","venue","held_at","early_bid"];
 
     const check = validateRequestBody(data, require);
     // console.log(`checkvalid = ${check}`);
 
     if (check) {
+      data.image_file = req.file.path
       const add_data = await AddEventDB(data);
       console.log(add_data);
       if (add_data) {
@@ -58,6 +59,7 @@ const Update_Event = async (req, res) => {
   try {
     const data_update = req.body;
     const data_id = req.params;
+    data_update.image_file = req.file.path
 
     if (!validatorUUID(data_id.id_event)) {
       throw new Error();
@@ -68,6 +70,11 @@ const Update_Event = async (req, res) => {
       price: data_update.price || null,
       category: data_update.category || null,
       year: data_update.year || null,
+      stock : data_update.stock || null,
+      venue : data_update.venue || null,
+      held_at : data_update.held_at || null,
+      image : data_update.image_file || null,
+      early_bid : data_update.early_bid || null
     };
     const filteredData = Object.fromEntries(
       Object.entries(data).filter(([key, value]) => value !== null)

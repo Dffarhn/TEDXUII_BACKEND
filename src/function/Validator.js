@@ -61,7 +61,9 @@ function validateRequestBody(body, requiredFields) {
       }
     }else if(typeof body[field] === "object"){
       return true
-    } else {
+    }else if(typeof body[field] === "boolean"){ 
+      return true
+    }else {
 
       // Invalid field type
       return false;

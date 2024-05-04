@@ -2,10 +2,9 @@ const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const saltRounds = 10; // You can adjust the number of salt rounds as needed
 
 const AccessApi = async (req, res, next) => {
-  const token = req.headers.authorization;
+  const token = req.headers.access_api;
 
 
   if (!token) {

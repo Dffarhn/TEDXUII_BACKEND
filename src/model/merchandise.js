@@ -45,39 +45,35 @@ async function AddMerchandiseDB(data) {
   try {
     const { name_merchandise, price_merchandise, stock_merchandise } = data;
 
-    const Main_Data = [name_merchandise, price_merchandise, stock_merchandise];
+    const Main_Data = [name_merchandise, price_merchandise, stock_merchandise, data.image_file];
 
     const dataString = [name_merchandise];
 
     const check_input_string = validateNoSpacesArray(dataString);
 
-    
-    const dataInteger=[price_merchandise, stock_merchandise]
-    if( validateNumber(dataInteger)){
-        
-        for (let i = 0; i < dataInteger.length; i++) {
-    
-    
-            dataInteger[i] = parseInt(dataInteger[i], 10)
-            
-        }
-    }else{
-        throw new Error
+    const dataInteger = [price_merchandise, stock_merchandise];
+    if (validateNumber(dataInteger)) {
+      for (let i = 0; i < dataInteger.length; i++) {
+        dataInteger[i] = parseInt(dataInteger[i], 10);
+      }
+    } else {
+      throw new Error();
     }
-    
-
 
     if (check_input_string) {
       // Use parameterized query to prevent SQL injection
       const queryText = `
-        INSERT INTO public.merchandise(name, stock, price)
-        VALUES ($1, $2, $3)
+        INSERT INTO public.merchandise(name, stock, price,image_merchandise)
+        VALUES ($1, $2, $3,ARRAY[$4])
          RETURNING *;
        `;
       const values = Main_Data;
 
       // Execute the query using parameterized values
       const { rows } = await pool.query(queryText, values);
+      console.log("tes from rows");
+      console.log(rows.length);
+      console.log(rows);
 
       return rows;
     } else {
@@ -102,8 +98,8 @@ async function UpdateMerchadiseDB(data) {
           if (validateNoSpaces(data[key])) {
             updateColumns.push(key);
             values.push(data[key]);
-          }else{
-            throw new Error
+          } else {
+            throw new Error();
           }
         } else {
           console.log(data[key]);
@@ -111,8 +107,8 @@ async function UpdateMerchadiseDB(data) {
             updateColumns.push(key);
             // Assuming price should be a number, parse it
             values.push(parseInt(data[key], 10));
-          }else{
-            throw new Error
+          } else {
+            throw new Error();
           }
         }
       }
@@ -121,7 +117,16 @@ async function UpdateMerchadiseDB(data) {
     // Periksa apakah ada kolom yang akan diupdate
     if (updateColumns.length > 0) {
       // Buat string untuk menggabungkan kolom-kolom yang akan diupdate dalam query
-      const updateQuery = updateColumns.map((col, index) => `${col}=$${index + 1}`).join(", ");
+      const updateQuery = updateColumns
+        .map((col, index) => {
+          if (col === "image_merchandise") {
+            // Handle array column specifically
+            return `${col}=ARRAY[$${index + 1}]`;
+          } else {
+            return `${col}=$${index + 1}`;
+          }
+        })
+        .join(", ");
 
       values.push(data.id_merchandise);
       // Buat queryText dengan kolom-kolom yang akan diupdate
