@@ -1,30 +1,27 @@
+const { acquireLock } = require("../function/mutexManager");
 const { AddBuyerDB } = require("../model/buyer");
 const { GetSpesificEventById } = require("../model/event");
 
-const { Mutex } = require('async-mutex');
-const mutex = new Mutex();
 
 const CheckEvent = async (req, res, next) => {
     try {
         // Acquire the mutex lock
-        const release = await mutex.acquire();
-
+        const lock = await acquireLock('payment1');
         const { id_event } = req.body;
         const data = await GetSpesificEventById(id_event);
 
         if (data.length > 0) {
             req.data_event = data[0];
             // Release the mutex lock before calling next()
-            release();
+          req.paymentLock = lock
             next();
         } else {
+          releaseLock(lock, 'payment1');
             // Release the mutex lock before sending the response
-            release();
             res.status(404).send({ msg: "Data tidak ditemukan" });
         }
     } catch (error) {
         // Release the mutex lock before sending the response
-        release();
         console.error("Error in CheckEvent middleware:", error);
         res.status(500).send({ msg: "Internal Server Error" });
     }

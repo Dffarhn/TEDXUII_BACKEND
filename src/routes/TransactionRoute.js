@@ -6,10 +6,10 @@ const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/tr
 const { UpdatebundlingTransactionDB } = require("../model/transactionBundling.js");
 const { UpdateMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
-
-const mutex = new Mutex();
+const { releaseLock } = require("../function/mutexManager.js");
 
 const Add_Transaction_Event = async (req, res) => {
+  const lock = req.paymentLock;
   try {
     const data = req.body;
     const data_event = req.data_event;
@@ -21,9 +21,7 @@ const Add_Transaction_Event = async (req, res) => {
     // console.log(`checkvalid = ${check}`);
 
     if (check) {
-      const release = await mutex.acquire();
 
-      try {
         await pool.query("BEGIN");
         const add_data = await AddEventTransactionDB(data, data_event, data_buyer);
         add_data[0].category = "event";
@@ -31,18 +29,19 @@ const Add_Transaction_Event = async (req, res) => {
           const payment = await Midtrans_Payment(add_data);
           if (payment) {
             await pool.query("COMMIT");
+            releaseLock(lock, 'payment1');
             res.status(201).send({ msg: "Sucessfully added", data: add_data, payment: payment });
           }
         }
-      } finally {
-        release();
-      }
+      
     } else {
       await pool.query("ROLLBACK");
+      releaseLock(lock, 'payment1');
       res.status(500).send({ msg: "your data is not valid" });
     }
   } catch (error) {
     await pool.query("ROLLBACK");
+    releaseLock(lock, 'payment1');
     console.log(error);
     res.status(500).send({ msg: "internal server error" });
   }
