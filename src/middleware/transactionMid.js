@@ -1,19 +1,14 @@
-const { acquireLock } = require("../function/mutexManager");
 const { AddBuyerDB } = require("../model/buyer");
 const { GetSpesificEventById } = require("../model/event");
 
 
 const CheckEvent = async (req, res, next) => {
   try {
-      // Acquire the mutex lock
-      const lock = await acquireLock('payment1');
       const { id_event } = req.body;
       const data = await GetSpesificEventById(id_event);
 
       if (data.length > 0) {
           req.data_event = data[0];
-          // Assign the lock to req.paymentLock
-          req.paymentLock = lock;
           next();
       } else {
           // Release the lock and send response

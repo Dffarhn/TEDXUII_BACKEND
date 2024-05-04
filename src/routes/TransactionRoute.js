@@ -5,10 +5,8 @@ const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/tr
 const { UpdatebundlingTransactionDB } = require("../model/transactionBundling.js");
 const { UpdateMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
-const { releaseLock } = require("../function/mutexManager.js");
 
 const Add_Transaction_Event = async (req, res) => {
-  const lock = req.paymentLock;
   try {
       const data = req.body;
       const data_event = req.data_event;
@@ -37,11 +35,6 @@ const Add_Transaction_Event = async (req, res) => {
       await pool.query("ROLLBACK");
       console.log(error);
       res.status(500).send({ msg: "Internal server error" });
-  } finally {
-      // Release the lock
-      if (lock) {
-          releaseLock(lock, 'payment1');
-      }
   }
 };
 
