@@ -2,7 +2,11 @@ const dotenv = require("dotenv");
 const { generateTicket } = require("./pdfgenerator");
 dotenv.config();
 
-const mailjet = require("node-mailjet").connect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
+const Mailjet = require('node-mailjet');
+const mailjet = Mailjet.apiConnect(
+    process.env.MJ_APIKEY_PUBLIC,
+    process.env.MJ_APIKEY_PRIVATE,
+);
 
 async function sendEmail(data) {
   return new Promise(async(resolve, reject) => {
