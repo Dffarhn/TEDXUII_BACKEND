@@ -133,11 +133,13 @@ async function UpdateEventTransactionDB(id,status_data){
         };
 
         const update_failed_payment = await UpdateEventDB(data)
+        return rows
       }else{
 
         const transaction_completed = await GetSpesificTransactionById(id)
 
         const sendMail = sendEmail(transaction_completed[0])
+        return rows
 
         
       }

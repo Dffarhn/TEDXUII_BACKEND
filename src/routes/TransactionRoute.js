@@ -61,17 +61,21 @@ const Notification_Transaction_Event = async (req, res) => {
         if (info_payment.custom_field1 === "event") {
           const update_transaction_event_toDB = UpdateEventTransactionDB(info_payment.order_id, update_transaction);
           console.log(update_transaction_event_toDB);
+          res.status(200).send("Thank you for your Midtrans")
         } else if (info_payment.custom_field1 === "merchandise") {
           const update_transaction_Merchandise_toDB = UpdateMerchandiseTransactionDB(info_payment.order_id, update_transaction);
           console.log(update_transaction_Merchandise_toDB);
+          res.status(200).send("Thank you for your Midtrans")
         } else if (info_payment.custom_field1 === "bundling") {
           const update_transaction_bundling_toDB = UpdatebundlingTransactionDB(info_payment.order_id, update_transaction);
           console.log(update_transaction_bundling_toDB);
+          res.status(200).send("Thank you for your Midtrans")
         }
       }
     }
   } catch (error) {
     console.error(error);
+    res.status(500).send("Thank you for your Midtrans")
   }
 };
 
