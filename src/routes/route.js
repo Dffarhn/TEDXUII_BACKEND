@@ -48,10 +48,10 @@ route.get("/testauth", Auth_Access, async (req, res) => {
 
 
 //route transaction bundling
-route.post("/transaction/bundling",Add_Buyer,CheckBundling, Add_Transaction_Bundling);
+route.post("/transaction/bundling",Add_Transaction_Bundling);
 
 //route transaction merchandise
-route.post("/transaction/merchandise",Add_Buyer,CheckMerchandise, Add_Transaction_merchandise);
+route.post("/transaction/merchandise",Add_Transaction_merchandise);
 
 //route transaction event
 route.post("/transaction/event",Add_Transaction_Event);
