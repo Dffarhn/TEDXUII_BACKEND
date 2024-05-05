@@ -6,6 +6,7 @@ const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/tr
 const { AddMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
 const { CheckMerchandise } = require("../middleware/transactionMidMerchandise.js");
+const { Add_Buyer } = require("../middleware/transactionMid.js");
 const mutex = new Mutex();
 
 const Add_Transaction_merchandise = async (req, res) => {
@@ -14,7 +15,7 @@ const Add_Transaction_merchandise = async (req, res) => {
     const data = req.body;
 
     const data_merchandise = await CheckMerchandise(req)
-      const data_buyer = await Add_Buyer(req);
+    const data_buyer = await Add_Buyer(req);
 
     const require = ["id_merchandise", "username", "email", "phone_number", "address", "quantity"];
 

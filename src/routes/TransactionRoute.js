@@ -48,10 +48,15 @@ const Add_Transaction_Event = async (req, res) => {
   }
 };
 
+
+
+
+const mutex_midtrans = new Mutex();
 const Notification_Transaction_Event = async (req, res) => {
+  const release_midtrans = await mutex_midtrans.acquire();
   try {
     const receivedJson = req.body;
-    console.log(receivedJson);
+    // console.log(receivedJson);
     const info_payment = await NotificationPayment(receivedJson);
 
     if (info_payment) {
@@ -78,6 +83,8 @@ const Notification_Transaction_Event = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Thank you for your Midtrans")
+  }finally{
+    release_midtrans();
   }
 };
 

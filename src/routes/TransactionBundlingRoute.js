@@ -7,6 +7,7 @@ const { AddbundlingTransactionDB } = require("../model/transactionBundling.js");
 const { AddMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
 const { CheckBundling } = require("../middleware/transactionMidBundling.js");
+const { Add_Buyer } = require("../middleware/transactionMid.js");
 
 const mutex = new Mutex();
 
