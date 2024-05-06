@@ -48,13 +48,17 @@ const Add_Transaction_Event = async (req, res) => {
   }
 };
 
+const mutex_midtrans = new Mutex();
 const Notification_Transaction = async (req, res) => {
+  const release_midtrans = await mutex_midtrans.acquire();
   try {
     const receivedJson = req.body;
+    console.log("masuk");
     const info_payment = await NotificationPayment(receivedJson);
 
     if (info_payment) {
       const update_transaction = Cek_Notification(info_payment);
+      console.log("in update transaction")
 
       if (update_transaction !== "pending" && update_transaction !== "unknown") {
         if (info_payment.custom_field1 === "event") {
@@ -77,6 +81,8 @@ const Notification_Transaction = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Thank you for your Midtrans");
+  } finally {
+    release_midtrans();
   }
 };
 

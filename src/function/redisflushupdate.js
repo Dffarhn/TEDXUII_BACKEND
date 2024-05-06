@@ -34,9 +34,10 @@ const flushKeysStartingWith = async (pattern) => {
     console.log("Flush keys starting with");
     const keys = await scanKeysMatchingPattern(pattern);
     const deletedKeys = await deleteKeys(keys);
-    console.log("Successfully deleted keys:", deletedKeys);
+    return keys
   } catch (error) {
     console.error("Error flushing keys:", error);
+    throw new Error
   }
 };
 

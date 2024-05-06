@@ -3,7 +3,7 @@ const { Midtrans_Payment } = require("./MidtransRoute.js");
 const { Get_Events, Get_Event, Add_Event, Update_Event, Delete_Event } = require("./EventRoute.js");
 const { Get_Merchandises, Get_Merchandise, Add_Merchandise, Update_Merchandise, Delete_Merchandise } = require("./MerchandiseRoute.js");
 const { Get_Bundlings, Get_Bundling, Add_Bundling, Update_Bundling, Delete_Bundling } = require("./BundlingRoute.js");
-const { Add_Transaction_Event, Notification_Transaction_Event, Cancel_Transaction_Event, Expired_Transaction_Event } = require("./TransactionRoute.js");
+const { Add_Transaction_Event, Notification_Transaction, Cancel_Transaction_Event, Expired_Transaction_Event } = require("./TransactionRoute.js");
 const { CheckEvent, Add_Buyer } = require("../middleware/transactionMid.js");
 const { CheckMerchandise } = require("../middleware/transactionMidMerchandise.js");
 const { Add_Transaction_merchandise } = require("./TransactionMerchandiseRoute.js");
@@ -33,6 +33,8 @@ route.post("/transaction/merchandise", Add_Transaction_merchandise);
 
 //route transaction event
 route.post("/transaction/event", Add_Transaction_Event);
+
+// route.post("/transaction/notif", Notification_Transaction);
 
 route.post("/transaction/cancel/v1", Cancel_Transaction_Event);
 route.post("/transaction/cancel/v2", Expired_Transaction_Event);

@@ -21,10 +21,12 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE"], // Allow specified HTTP methods
 };
 //midtrans only
-app.post("/transaction/notif", Notification_Transaction);
+
+
 app.use(cors(corsOptions));
 app.use(express.json());
 
+app.post("/transaction/notif", Notification_Transaction);
 app.use(AccessApi);
 
 app.use(route);
