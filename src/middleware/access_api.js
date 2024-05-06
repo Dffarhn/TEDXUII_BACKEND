@@ -1,14 +1,12 @@
-const bcrypt = require('bcrypt');
-const dotenv = require('dotenv');
+const bcrypt = require("bcrypt");
+const dotenv = require("dotenv");
 dotenv.config();
-
 
 const AccessApi = async (req, res, next) => {
   const token = req.headers.access_api;
 
-
   if (!token) {
-    return res.status(403).send({ msg: 'Token missing' });
+    return res.status(403).send({ msg: "Token missing" });
   }
 
   try {
@@ -17,11 +15,11 @@ const AccessApi = async (req, res, next) => {
     if (isMatch) {
       next(); // Move to the next middleware
     } else {
-      res.status(403).send({ msg: 'Invalid token' });
+      res.status(403).send({ msg: "Invalid token" });
     }
   } catch (err) {
-    console.error('Token hashing error:', err);
-    res.status(500).send({ msg: 'Internal server error' });
+    console.error("Token hashing error:", err);
+    res.status(500).send({ msg: "Internal server error" });
   }
 };
 

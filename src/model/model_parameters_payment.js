@@ -3,29 +3,15 @@
 const { validateNumber, validateEmail, validateNoSpacesArray } = require("../function/Validator.js");
 
 function MakePaymentData(data) {
-  const StringInput = [
-    data.id,
-    data.category,
-    data.buyer_details[0].username,
-    data.buyer_details[0].address,
-    data.data_details[0].id,
-    data.data_details[0].name,
-    data.buyer_details[0].phone_number,
-  ];
-  
+  const StringInput = [data.id, data.category, data.buyer_details[0].username, data.buyer_details[0].address, data.data_details[0].id, data.data_details[0].name, data.buyer_details[0].phone_number];
+
   // console.log(data)
 
   // console.log(StringInput);
-  
 
-  const IntegerInput = [
-    parseInt(data.gross_amount,10),
-    data.data_details[0].price,
-    data.quantity,
-  ];
+  const IntegerInput = [parseInt(data.gross_amount, 10), data.data_details[0].price, data.quantity];
 
   const EmailInput = data.buyer_details[0].email;
-
 
   // Perform validation and handle errors
   if (!validateNoSpacesArray(StringInput)) {
@@ -37,7 +23,6 @@ function MakePaymentData(data) {
   if (!validateEmail(EmailInput)) {
     throw new Error("Invalid email format.");
   }
-
 
   let PaymentData = {
     order_id: data.id,
@@ -57,20 +42,18 @@ function MakePaymentData(data) {
     expiry: {
       start_time: data.created_at,
       unit: "hours",
-      duration: 2
+      duration: 2,
     },
     page_expiry: {
       duration: 2,
-      unit: "hours"
+      unit: "hours",
     },
-    custom_field1: data.category
+    custom_field1: data.category,
   };
 
   // console.log(PaymentData)
 
-  return PaymentData
-  
+  return PaymentData;
 }
 
-
-module.exports = {  MakePaymentData };
+module.exports = { MakePaymentData };

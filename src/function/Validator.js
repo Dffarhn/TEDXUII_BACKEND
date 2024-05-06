@@ -48,7 +48,6 @@ function validateRequestBody(body, requiredFields) {
   // console.log(body);
   // console.log(requiredFields);
   for (const field of requiredFields) {
-
     if (typeof body[field] === "string") {
       // Check if the field is a string
       if (!body[field] || body[field].trim() === "") {
@@ -59,12 +58,11 @@ function validateRequestBody(body, requiredFields) {
       if (!validateNumber(body[field])) {
         return false; // Return false if the number validation fails
       }
-    }else if(typeof body[field] === "object"){
-      return true
-    }else if(typeof body[field] === "boolean"){ 
-      return true
-    }else {
-
+    } else if (typeof body[field] === "object") {
+      return true;
+    } else if (typeof body[field] === "boolean") {
+      return true;
+    } else {
       // Invalid field type
       return false;
     }

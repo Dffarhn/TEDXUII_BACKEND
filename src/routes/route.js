@@ -12,6 +12,7 @@ const { Add_Transaction_Bundling } = require("./TransactionBundlingRoute.js");
 const { register, login } = require("./AdminRoute.js");
 const { merchandiseUpload, convertToWebP, eventsUpload } = require("../middleware/multerHandle.js");
 const { Auth_Access } = require("../middleware/jwtToken.js");
+const { redisCacheMiddleware_Bundling, redisCacheMiddleware_Merchandises, redisCacheMiddleware_Events } = require("../middleware/Redis_Middleware.js");
 
 const route = Router();
 
@@ -19,76 +20,43 @@ route.get("/", (req, res) => {
   res.status(200).send("Halo world");
 });
 
-
-
 //admin
 route.post("/login", login);
 
-route.post("/register", register)
-
-route.get("/testauth", Auth_Access, async (req, res) => {
-  try {
-    if (req.newAccessToken) {
-      // If a new access token was generated during token refresh
-      // You can send it back to the client in the response headers or body
-      res.setHeader("Authorization", `Bearer ${req.newAccessToken}`);
-      // or res.json({ newAccessToken: req.newAccessToken, message: "bisa" });
-    }
-    
-    console.log(req.user);
-    res.status(200).send("bisa");
-  } catch (error) {
-    res.status(500).send("u cant access");
-  }
-});
-
-
-
-
-
+route.post("/register", register);
 
 //route transaction bundling
-route.post("/transaction/bundling",Add_Transaction_Bundling);
+route.post("/transaction/bundling", Add_Transaction_Bundling);
 
 //route transaction merchandise
-route.post("/transaction/merchandise",Add_Transaction_merchandise);
+route.post("/transaction/merchandise", Add_Transaction_merchandise);
 
 //route transaction event
-route.post("/transaction/event",Add_Transaction_Event);
+route.post("/transaction/event", Add_Transaction_Event);
 
-
-
-route.post("/transaction/notif",Notification_Transaction_Event)
-
-route.post("/transaction/cancel/v1",Cancel_Transaction_Event)
-route.post("/transaction/cancel/v2",Expired_Transaction_Event)
-
-
-
-
-
+route.post("/transaction/cancel/v1", Cancel_Transaction_Event);
+route.post("/transaction/cancel/v2", Expired_Transaction_Event);
 
 //route Bundling
-route.get("/bundlings", Get_Bundlings)
-route.get("/bundling/:id_bundling", Get_Bundling)
-route.post("/bundling",Auth_Access ,Add_Bundling);
-route.patch("/bundling/:id_bundling", Auth_Access,Update_Bundling );
-route.delete("/bundling/:id_bundling", Auth_Access,Delete_Bundling);
-
+route.get("/bundlings", redisCacheMiddleware_Bundling, Get_Bundlings);
+route.get("/bundling/:id_bundling", Get_Bundling);
+route.post("/bundling", Auth_Access, Add_Bundling);
+route.patch("/bundling/:id_bundling", Auth_Access, Update_Bundling);
+route.delete("/bundling/:id_bundling", Auth_Access, Delete_Bundling);
 
 //route Merchandise
-route.get("/merchandises", Get_Merchandises);
+route.get("/merchandises", redisCacheMiddleware_Merchandises, Get_Merchandises);
 route.get("/merchandise/:id_merchandise", Get_Merchandise);
-route.post("/merchandise", Auth_Access,merchandiseUpload.single('image_merchandise'),convertToWebP,Add_Merchandise);
-route.patch("/merchandise/:id_merchandise",Auth_Access,merchandiseUpload.single('image_merchandise'),convertToWebP, Update_Merchandise);
-route.delete("/merchandise/:id_merchandise",Auth_Access, Delete_Merchandise);
+route.post("/merchandise", Auth_Access, merchandiseUpload.single("image_merchandise"), convertToWebP, Add_Merchandise);
+route.patch("/merchandise/:id_merchandise", Auth_Access, merchandiseUpload.single("image_merchandise"), convertToWebP, Update_Merchandise);
+route.delete("/merchandise/:id_merchandise", Auth_Access, Delete_Merchandise);
 
 // Route events
-route.get("/events", Get_Events);
+route.get("/events", redisCacheMiddleware_Events, Get_Events);
 route.get("/event/:id_event", Get_Event);
-route.post("/event",Auth_Access,eventsUpload.single('image_event') ,convertToWebP,Add_Event);
-route.patch("/event/:id_event",Auth_Access,eventsUpload.single('image_event') ,convertToWebP, Update_Event);
-route.delete("/event/:id_event",Auth_Access, Delete_Event);
+route.post("/event", Auth_Access, eventsUpload.single("image_event"), convertToWebP, Add_Event);
+route.patch("/event/:id_event", Auth_Access, eventsUpload.single("image_event"), convertToWebP, Update_Event);
+route.delete("/event/:id_event", Auth_Access, Delete_Event);
 
 //Midtrans Payment routes
 route.post("/payment", Midtrans_Payment);

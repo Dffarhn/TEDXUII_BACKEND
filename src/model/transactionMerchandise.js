@@ -1,6 +1,7 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
 const { sendEmail } = require("../function/mailjet.js");
+const { flushKeysStartingWith } = require("../function/redisflushupdate.js");
 const { UpdateMerchadiseDB } = require("./merchandise.js");
 
 async function GetSpesificTransactionMerchandiseById(id) {
@@ -81,7 +82,7 @@ async function AddMerchandiseTransactionDB(data, data_merchandise, data_buyer) {
           console.log(rows[0].id);
           const dataSpesific = await GetSpesificTransactionMerchandiseById(rows[0].id);
 
-          console.log("HITTTTTTTTTTTTTTTTTTTTTTTTT")
+          console.log("HITTTTTTTTTTTTTTTTTTTTTTTTT");
           return dataSpesific;
         }
       } else {
@@ -96,9 +97,9 @@ async function AddMerchandiseTransactionDB(data, data_merchandise, data_buyer) {
   }
 }
 
-async function UpdateMerchandiseTransactionDB(id,status_data){
+async function UpdateMerchandiseTransactionDB(id, status_data) {
   try {
-    const values = [status_data,id]
+    const values = [status_data, id];
 
     const queryText = `
       UPDATE public.transaction_merchandise
@@ -106,49 +107,45 @@ async function UpdateMerchandiseTransactionDB(id,status_data){
       WHERE id=$${values.length};
       `;
 
-      // Tambahkan id_merchandise ke values array
+    // Tambahkan id_merchandise ke values array
 
-      console.log("Update query:", queryText);
-      console.log("Values:", values);
-      // Execute your database update query using the queryText and values
-      // Example:
-      const rows = await pool.query(queryText, values);
+    console.log("Update query:", queryText);
+    console.log("Values:", values);
+    // Execute your database update query using the queryText and values
+    // Example:
+    const rows = await pool.query(queryText, values);
 
-      if (status_data === "failed") {
+    if (status_data === "failed") {
+      const update_stock = await GetSpesificTransactionMerchandiseById(id);
 
-        const update_stock = await GetSpesificTransactionMerchandiseById(id)
+      const stock_failed = parseInt(update_stock[0].quantity, 10);
 
-        const stock_failed =parseInt( update_stock[0].quantity,10)
+      const stock_now = parseInt(update_stock[0].data_details[0].stock, 10);
 
-        const stock_now = parseInt(update_stock[0].data_details[0].stock,10)
-        
-        const stock_rollback = stock_now + stock_failed
+      const stock_rollback = stock_now + stock_failed;
 
-        const id_merchandise = update_stock[0].data_details[0].id
+      const id_merchandise = update_stock[0].data_details[0].id;
 
-        const data = {
-          id_merchandise: id_merchandise,
-          stock : stock_rollback
-        };
+      const data = {
+        id_merchandise: id_merchandise,
+        stock: stock_rollback,
+      };
 
-        const update_failed_payment = await UpdateMerchadiseDB(data)
-        return rows
-      }else{
+      const update_failed_payment = await UpdateMerchadiseDB(data);
 
-        const transaction_completed = await GetSpesificTransactionMerchandiseById(id)
+      await flushKeysStartingWith("merchandise");
+      return rows;
+    } else {
+      const transaction_completed = await GetSpesificTransactionMerchandiseById(id);
 
-        const sendMail = sendEmail(transaction_completed[0])
-        return rows
+      const sendMail = sendEmail(transaction_completed[0]);
+      return rows;
+    }
 
-        
-      }
-      
-      return rows
+    return rows;
   } catch (error) {
     console.log(error);
-    
   }
-
 }
 
 module.exports = { AddMerchandiseTransactionDB, GetSpesificTransactionMerchandiseById, UpdateMerchandiseTransactionDB };

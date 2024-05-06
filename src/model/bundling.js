@@ -1,9 +1,8 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
 
-async function GetAllBundling(sort = null, name = null) {
-  let queryString =
-    "SELECT b.*,json_agg(m.*) AS items_details FROM bundling b JOIN merchandise m ON m.id = ANY(b.list_bundling) GROUP BY b.id, b.name, b.stock, b.price, b.list_bundling, b.created_at";
+async function GetAllBundling(sort = null) {
+  let queryString = "SELECT b.*,json_agg(m.*) AS items_details FROM bundling b JOIN merchandise m ON m.id = ANY(b.list_bundling) GROUP BY b.id, b.name, b.stock, b.price, b.list_bundling, b.created_at";
   let queryParams = [];
 
   // Check if filtering by name is specified
@@ -24,10 +23,9 @@ async function GetAllBundling(sort = null, name = null) {
 async function GetSpesificBundlingById(id) {
   try {
     if (validatorUUID(id)) {
-      const { rows } = await pool.query(
-        "SELECT b.*,json_agg(m.*) AS items_details FROM bundling b JOIN merchandise m ON m.id= ANY(b.list_bundling) WHERE b.id = $1 GROUP BY b.id, b.name, b.stock, b.price, b.list_bundling, b.created_at",
-        [id]
-      );
+      const { rows } = await pool.query("SELECT b.*,json_agg(m.*) AS items_details FROM bundling b JOIN merchandise m ON m.id= ANY(b.list_bundling) WHERE b.id = $1 GROUP BY b.id, b.name, b.stock, b.price, b.list_bundling, b.created_at", [
+        id,
+      ]);
       console.log(rows);
       return rows;
     } else {
@@ -122,10 +120,8 @@ async function UpdateBundlingDB(data) {
           if (Array.isArray(data[key])) {
             // If the value is an array, iterate through each element
             data[key].forEach((uuid) => {
-
               if (!validatorUUID(uuid)) {
-                throw new Error
-                
+                throw new Error();
               }
               // Process each UUID here
             });
@@ -138,13 +134,12 @@ async function UpdateBundlingDB(data) {
       }
     });
 
-
     // Periksa apakah ada kolom yang akan diupdate
     if (updateColumns.length > 0) {
       // Buat string untuk menggabungkan kolom-kolom yang akan diupdate dalam query
       const updateQuery = updateColumns
         .map((col, index) => {
-          if (col === 'list_bundling') {
+          if (col === "list_bundling") {
             // Handle array column specifically
             return `${col}=ARRAY(SELECT unnest($${index + 1}::text[])::uuid)`;
           } else {

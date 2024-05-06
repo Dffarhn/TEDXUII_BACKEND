@@ -11,7 +11,7 @@ async function Add_AdminDB(data) {
     const checkstringinput = validateNoSpacesArray(stringinput);
     const checkemailinput = validateEmail(emailinput);
     const checksameemail = await check_AdminDB(email);
-    
+
     if (checkstringinput && checkemailinput) {
       if (checksameemail.length > 0) {
         throw new Error("Admin dengan email ini sudah terdaftar.");
@@ -83,7 +83,7 @@ async function check_LoginDB(data) {
       return false;
     }
   } else {
-    return false
+    return false;
   }
 }
 

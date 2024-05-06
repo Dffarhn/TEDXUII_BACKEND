@@ -1,7 +1,7 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
 
-async function GetAllMerchandise(sort = null, name = null) {
+async function GetAllMerchandise(sort = null) {
   let queryString = "SELECT * FROM Merchandise";
   let queryParams = [];
 

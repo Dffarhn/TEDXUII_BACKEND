@@ -1,6 +1,7 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
 const { sendEmail } = require("../function/mailjet.js");
+const { flushKeysStartingWith } = require("../function/redisflushupdate.js");
 const { UpdateEventDB } = require("./event.js");
 
 async function GetSpesificTransactionById(id) {
@@ -72,7 +73,6 @@ async function AddEventTransactionDB(data, data_event, data_buyer) {
         const values = Main_Data;
         // console.log(values.slice(0, 4));
 
-
         // Execute the query using parameterized values
         const { rows } = await pool.query(queryText_transaction, values.slice(0, 4));
 
@@ -97,9 +97,9 @@ async function AddEventTransactionDB(data, data_event, data_buyer) {
   }
 }
 
-async function UpdateEventTransactionDB(id,status_data){
+async function UpdateEventTransactionDB(id, status_data) {
   try {
-    const values = [status_data,id]
+    const values = [status_data, id];
 
     const queryText = `
       UPDATE public.transaction_event
@@ -107,49 +107,44 @@ async function UpdateEventTransactionDB(id,status_data){
       WHERE id=$${values.length};
       `;
 
-      // Tambahkan id_event ke values array
+    // Tambahkan id_event ke values array
 
-      console.log("Update query:", queryText);
-      console.log("Values:", values);
-      // Execute your database update query using the queryText and values
-      // Example:
-      const rows = await pool.query(queryText, values);
+    console.log("Update query:", queryText);
+    console.log("Values:", values);
+    // Execute your database update query using the queryText and values
+    // Example:
+    const rows = await pool.query(queryText, values);
 
-      if (status_data === "failed") {
+    if (status_data === "failed") {
+      const update_stock = await GetSpesificTransactionById(id);
 
-        const update_stock = await GetSpesificTransactionById(id)
+      const stock_failed = parseInt(update_stock[0].quantity, 10);
 
-        const stock_failed =parseInt( update_stock[0].quantity,10)
+      const stock_now = parseInt(update_stock[0].data_details[0].stock, 10);
 
-        const stock_now = parseInt(update_stock[0].data_details[0].stock,10)
-        
-        const stock_rollback = stock_now + stock_failed
+      const stock_rollback = stock_now + stock_failed;
 
-        const id_event = update_stock[0].data_details[0].id
+      const id_event = update_stock[0].data_details[0].id;
 
-        const data = {
-          id_event: id_event,
-          stock : stock_rollback
-        };
+      const data = {
+        id_event: id_event,
+        stock: stock_rollback,
+      };
 
-        const update_failed_payment = await UpdateEventDB(data)
-        return rows
-      }else{
+      const update_failed_payment = await UpdateEventDB(data);
+      await flushKeysStartingWith("event");
+      return rows;
+    } else {
+      const transaction_completed = await GetSpesificTransactionById(id);
 
-        const transaction_completed = await GetSpesificTransactionById(id)
+      const sendMail = sendEmail(transaction_completed[0]);
+      return rows;
+    }
 
-        const sendMail = sendEmail(transaction_completed[0])
-        return rows
-
-        
-      }
-      
-      return rows
+    return rows;
   } catch (error) {
     console.log(error);
-    
   }
-
 }
 
 module.exports = { AddEventTransactionDB, GetSpesificTransactionById, UpdateEventTransactionDB };

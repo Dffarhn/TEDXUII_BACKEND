@@ -1,7 +1,6 @@
 const { AddBuyerDB } = require("../model/buyer");
 const { GetSpesificEventById } = require("../model/event");
 
-
 // const CheckEvent = async (req, res, next) => {
 //   try {
 //       const { id_event } = req.body;
@@ -22,32 +21,26 @@ const { GetSpesificEventById } = require("../model/event");
 // };
 
 async function CheckEvent(req) {
-    const { id_event } = req.body;
-    const data = await GetSpesificEventById(id_event);
+  const { id_event } = req.body;
+  const data = await GetSpesificEventById(id_event);
 
-    if (data.length > 0) {
-        return data[0]
-    } else {
-        throw new Error
-    }  
+  if (data.length > 0) {
+    return data[0];
+  } else {
+    throw new Error();
+  }
 }
 
 async function Add_Buyer(req) {
-    const data = req.body
+  const data = req.body;
 
-    const add_to_db = await AddBuyerDB(data)
+  const add_to_db = await AddBuyerDB(data);
 
-    if (add_to_db) {
-      return add_to_db[0];
-
-    }else{
-      throw new Error
-
-    }
-
-
-    
-  
+  if (add_to_db) {
+    return add_to_db[0];
+  } else {
+    throw new Error();
+  }
 }
 
 // const Add_Buyer = async(req, res,next) => {
@@ -65,12 +58,10 @@ async function Add_Buyer(req) {
 
 //     }
 
-
-    
 //   } catch (error) {
 //     res.status(500).send({ msg: "internal server error" });
-    
+
 //   }
 // }
 
-module.exports={CheckEvent,Add_Buyer}
+module.exports = { CheckEvent, Add_Buyer };

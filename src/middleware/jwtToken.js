@@ -1,13 +1,11 @@
 const jwt = require("jsonwebtoken");
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 dotenv.config();
-
 
 const Auth_Access = (req, res, next) => {
   // Get the access token from the Authorization header
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1]; // Extract the token part
-  
 
   // Check if token is present
   if (!token) {
@@ -19,10 +17,10 @@ const Auth_Access = (req, res, next) => {
     if (err) {
       try {
         const accessToken = await Auth_refresh_check(req);
-        req.newAccessToken = accessToken
+        req.newAccessToken = accessToken;
         next();
       } catch (error) {
-        return res.status(403).json({ message: `Refresh token is invalid.`, FE: "redirect to login"});
+        return res.status(403).json({ message: `Refresh token is invalid.`, FE: "redirect to login" });
       }
     } else {
       // Token is valid, attach decoded user information to the request object
@@ -44,8 +42,7 @@ async function Auth_refresh_check(req) {
     const decoded = await jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH_TOKEN);
     console.log(decoded);
 
-
-    const payload = {id:decoded.id,username:decoded.username,email: req.body.email}
+    const payload = { id: decoded.id, username: decoded.username, email: req.body.email };
 
     // Refresh token is valid, generate a new access token
     const accessToken = jwt.sign(payload, process.env.SECRET_KEY_TOKEN, {
@@ -59,6 +56,5 @@ async function Auth_refresh_check(req) {
     throw new Error("Refresh token verification failed.");
   }
 }
-
 
 module.exports = { Auth_Access };

@@ -61,11 +61,11 @@ async function GetSpesificEventById(id) {
 
 async function AddEventDB(data) {
   try {
-    const { name, price, category, year,stock,venue,held_at,early_bid,image_file } = data;
+    const { name, price, category, year, stock, venue, held_at, early_bid, image_file } = data;
 
-    const Main_Data = [name, price, category, year,stock,venue,held_at,early_bid,image_file];
+    const Main_Data = [name, price, category, year, stock, venue, held_at, early_bid, image_file];
 
-    const dataString = [name, year,venue];
+    const dataString = [name, year, venue];
 
     const check_input_string = validateNoSpacesArray(dataString);
 
@@ -75,7 +75,7 @@ async function AddEventDB(data) {
 
     const stock_data = parseInt(stock, 10);
 
-    const dataInteger=[price_data, category_data,stock_data]
+    const dataInteger = [price_data, category_data, stock_data];
 
     const check_input_integer = validateNumber(dataInteger);
 
@@ -116,16 +116,16 @@ async function UpdateEventDB(data) {
           if (validateNoSpaces(data[key])) {
             updateColumns.push(key);
             values.push(data[key]);
-          }else{
-            throw new Error
+          } else {
+            throw new Error();
           }
         } else {
           if (validateNumber(data[key])) {
             updateColumns.push(key);
             // Assuming price should be a number, parse it
             values.push(parseInt(data[key], 10));
-          }else{
-            throw new Error
+          } else {
+            throw new Error();
           }
         }
       }

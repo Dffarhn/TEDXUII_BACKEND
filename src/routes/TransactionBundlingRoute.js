@@ -8,6 +8,7 @@ const { AddMerchandiseTransactionDB } = require("../model/transactionMerchandise
 const { Midtrans_Payment } = require("./MidtransRoute.js");
 const { CheckBundling } = require("../middleware/transactionMidBundling.js");
 const { Add_Buyer } = require("../middleware/transactionMid.js");
+const { flushKeysStartingWith } = require("../function/redisflushupdate.js");
 
 const mutex = new Mutex();
 
@@ -15,7 +16,7 @@ const Add_Transaction_Bundling = async (req, res) => {
   const release = await mutex.acquire();
   try {
     const data = req.body;
-    const data_Bundling = await CheckBundling(req)
+    const data_Bundling = await CheckBundling(req);
     const data_buyer = await Add_Buyer(req);
 
     const require = ["id_bundling", "username", "email", "phone_number", "address", "quantity"];
@@ -24,17 +25,18 @@ const Add_Transaction_Bundling = async (req, res) => {
     // console.log(`checkvalid = ${check}`);
 
     if (check) {
-        await pool.query("BEGIN");
-        const add_data = await AddbundlingTransactionDB(data, data_Bundling, data_buyer);
-        add_data[0].category = "bundling";
-        if (add_data) {
-          const payment = await Midtrans_Payment(add_data);
-          console.log(payment);
-          if (payment) {
-            await pool.query("COMMIT");
-            res.status(201).send({ msg: "Sucessfully added", data: add_data, payment: payment });
-          }
+      await pool.query("BEGIN");
+      const add_data = await AddbundlingTransactionDB(data, data_Bundling, data_buyer);
+      add_data[0].category = "bundling";
+      if (add_data) {
+        const payment = await Midtrans_Payment(add_data);
+        console.log(payment);
+        if (payment) {
+          await pool.query("COMMIT");
+          await flushKeysStartingWith("bundling");
+          res.status(201).send({ msg: "Sucessfully added", data: add_data, payment: payment });
         }
+      }
     } else {
       await pool.query("ROLLBACK");
       res.status(500).send({ msg: "your data is not valid" });
@@ -43,7 +45,7 @@ const Add_Transaction_Bundling = async (req, res) => {
     await pool.query("ROLLBACK");
     console.log(error);
     res.status(500).send({ msg: "internal server error" });
-  }finally {
+  } finally {
     release();
   }
 };

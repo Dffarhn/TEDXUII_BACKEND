@@ -2,16 +2,11 @@ const dotenv = require("dotenv");
 const { generateTicket } = require("./pdfgenerator");
 dotenv.config();
 
-const Mailjet = require('node-mailjet');
-const mailjet = Mailjet.apiConnect(
-    process.env.MJ_APIKEY_PUBLIC,
-    process.env.MJ_APIKEY_PRIVATE,
-);
+const Mailjet = require("node-mailjet");
+const mailjet = Mailjet.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 
 async function sendEmail(data) {
-  return new Promise(async(resolve, reject) => {
-
-
+  return new Promise(async (resolve, reject) => {
     const pdfBuffer = await generateTicket(data);
     const request = mailjet.post("send", { version: "v3.1" }).request({
       Messages: [
@@ -33,7 +28,7 @@ async function sendEmail(data) {
             {
               ContentType: "application/pdf",
               Filename: "ticket.pdf",
-              Base64Content: pdfBuffer.toString('base64'),
+              Base64Content: pdfBuffer.toString("base64"),
             },
           ],
         },
@@ -50,4 +45,4 @@ async function sendEmail(data) {
   });
 }
 
-module.exports = {sendEmail}
+module.exports = { sendEmail };

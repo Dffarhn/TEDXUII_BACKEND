@@ -7,6 +7,7 @@ const { AddMerchandiseTransactionDB } = require("../model/transactionMerchandise
 const { Midtrans_Payment } = require("./MidtransRoute.js");
 const { CheckMerchandise } = require("../middleware/transactionMidMerchandise.js");
 const { Add_Buyer } = require("../middleware/transactionMid.js");
+const { flushKeysStartingWith } = require("../function/redisflushupdate.js");
 const mutex = new Mutex();
 
 const Add_Transaction_merchandise = async (req, res) => {
@@ -14,7 +15,7 @@ const Add_Transaction_merchandise = async (req, res) => {
   try {
     const data = req.body;
 
-    const data_merchandise = await CheckMerchandise(req)
+    const data_merchandise = await CheckMerchandise(req);
     const data_buyer = await Add_Buyer(req);
 
     const require = ["id_merchandise", "username", "email", "phone_number", "address", "quantity"];
@@ -31,6 +32,7 @@ const Add_Transaction_merchandise = async (req, res) => {
         console.log(payment);
         if (payment) {
           await pool.query("COMMIT");
+          await flushKeysStartingWith("merchandise");
           res.status(201).send({ msg: "Sucessfully added", data: add_data, payment: payment });
         }
       }
