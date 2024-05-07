@@ -87,4 +87,83 @@ async function check_LoginDB(data) {
   }
 }
 
-module.exports = { Add_AdminDB, check_LoginDB };
+async function GetAllTransactionMerchandise() {
+  try {
+    const { rows } = await pool.query(
+      `
+      SELECT te.* , json_agg(m.*) AS data_details, json_agg(b.*) AS buyer_details
+      FROM transaction_merchandise te
+      JOIN merchandise m ON m.id = te.merchandise_id
+      JOIN buyer b ON b.id_buyer = te.buyer_id
+      WHERE te.status = 'success'
+	    GROUP BY te.id, te.gross_amount,te.status,te.quantity`
+    );
+    return rows;
+  } catch (err) {
+    throw new Error({ error: "Internal Server Error" });
+  }
+}
+
+async function GetAllTransactionbundling() {
+  try {
+    const { rows } = await pool.query(
+      `
+      SELECT te.* , json_agg(m.*) AS data_details, json_agg(b.*) AS buyer_details
+      FROM transaction_bundling te
+      JOIN bundling m ON m.id = te.bundling_id
+      JOIN buyer b ON b.id_buyer = te.buyer_id
+      WHERE te.status = 'success'
+	    GROUP BY te.id, te.gross_amount,te.status,te.quantity`
+    );
+
+    return rows;
+  } catch (err) {
+    throw new Error({ error: "Internal Server Error" });
+  }
+}
+
+async function GetAllTransactionEvents() {
+  try {
+    // console.log(id);
+    const { rows } = await pool.query(
+      `
+      SELECT te.* , json_agg(e.*) AS data_details, json_agg(b.*) AS buyer_details
+      FROM transaction_event te
+      JOIN event e ON e.id = te.event_id
+      JOIN buyer b ON b.id_buyer = te.buyer_id
+      WHERE te.status = 'success'
+	    GROUP BY te.id, te.gross_amount,te.status,te.quantity`
+    );
+
+    // console.log(rows)
+    return rows;
+  } catch (err) {
+    throw new Error({ error: "Internal Server Error" });
+  }
+}
+
+async function CountTransactionSuccess() {
+  try {
+    // console.log(id);
+    const { rows } = await pool.query(
+      `
+      SELECT 'transaction_event' AS table_name, COUNT(*) AS success_count
+      FROM transaction_event
+      WHERE status = 'success'
+      UNION ALL
+      SELECT 'transaction_bundling' AS table_name, COUNT(*) AS success_count
+      FROM transaction_bundling
+      WHERE status = 'success'
+      UNION ALL
+      SELECT 'transaction_merchandise' AS table_name, COUNT(*) AS success_count
+      FROM transaction_merchandise
+      WHERE status = 'success'
+      `
+    );
+    return rows;
+  } catch (err) {
+    throw new Error({ error: "Internal Server Error" });
+  }
+}
+
+module.exports = { Add_AdminDB, check_LoginDB,GetAllTransactionMerchandise ,GetAllTransactionbundling,GetAllTransactionEvents,CountTransactionSuccess};

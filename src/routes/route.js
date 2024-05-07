@@ -9,10 +9,11 @@ const { CheckMerchandise } = require("../middleware/transactionMidMerchandise.js
 const { Add_Transaction_merchandise } = require("./TransactionMerchandiseRoute.js");
 const { CheckBundling } = require("../middleware/transactionMidBundling.js");
 const { Add_Transaction_Bundling } = require("./TransactionBundlingRoute.js");
-const { register, login } = require("./AdminRoute.js");
+const { register, login, GetAllTransactionBundlingRoute, GetAllTransactionEventsRoute, GetAllTransactionMerchandiseRoute, GetAllTransactionCounts } = require("./AdminRoute.js");
 const { merchandiseUpload, convertToWebP, eventsUpload } = require("../middleware/multerHandle.js");
 const { Auth_Access } = require("../middleware/jwtToken.js");
 const { redisCacheMiddleware_Bundling, redisCacheMiddleware_Merchandises, redisCacheMiddleware_Events } = require("../middleware/Redis_Middleware.js");
+const { GetAllTransactionbundling, GetAllTransactionMerchandise, GetAllTransactionEvents, CountTransactionSuccess } = require("../model/admin.js");
 
 const route = Router();
 
@@ -27,12 +28,18 @@ route.post("/register", register);
 
 //route transaction bundling
 route.post("/transaction/bundling", Add_Transaction_Bundling);
+route.get("/transaction/bundling",Auth_Access,GetAllTransactionBundlingRoute)
 
 //route transaction merchandise
 route.post("/transaction/merchandise", Add_Transaction_merchandise);
+route.get("/transaction/merchandise",Auth_Access,GetAllTransactionMerchandiseRoute)
 
 //route transaction event
 route.post("/transaction/event", Add_Transaction_Event);
+route.get("/transaction/event",Auth_Access,GetAllTransactionEventsRoute)
+
+
+route.get("/transaction/count",GetAllTransactionCounts)
 
 // route.post("/transaction/notif", Notification_Transaction);
 

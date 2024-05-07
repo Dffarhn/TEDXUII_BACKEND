@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { Add_AdminDB, check_LoginDB } = require("../model/admin");
+const { Add_AdminDB, check_LoginDB, GetAllTransactionbundling, GetAllTransactionEvents, CountTransactionSuccess } = require("../model/admin");
 const dotenv = require("dotenv");
 const { validateRequestBody } = require("../function/Validator");
 dotenv.config();
@@ -87,4 +87,67 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+
+const GetAllTransactionBundlingRoute = async(req,res)=>{
+  try {
+    const detail_bundling_transaction = await GetAllTransactionbundling()
+
+    // console.log(detail_bundling_transaction)
+
+    res.status(200).send({msg:"success query",data: detail_bundling_transaction});
+    
+  } catch (error) {
+
+    res.status(500).send({msg:"internal server error"});
+    
+  }
+
+}
+
+const GetAllTransactionEventsRoute = async(req,res)=>{
+  try {
+    const detail_Event_transaction = await GetAllTransactionEvents()
+
+    console.log(detail_Event_transaction)
+
+    res.status(200).send({msg:"success query",data: detail_Event_transaction});
+    
+  } catch (error) {
+
+    res.status(500).send({msg:"internal server error"});
+    
+  }
+
+}
+
+const GetAllTransactionMerchandiseRoute = async(req,res)=>{
+  try {
+    const detail_merchandise_transaction = await GetAllTransactionMerchandise()
+
+    // console.log(detail_merchandise_transaction)
+
+    
+
+    res.status(200).send({msg:"success query",data: detail_merchandise_transaction});
+    
+  } catch (error) {
+
+    res.status(500).send({msg:"internal server error"});
+    
+  }
+
+}
+
+const GetAllTransactionCounts = async(req, res) => {
+  try {
+    const count_transaction_success = await CountTransactionSuccess()
+
+    res.status(200).send({msg:"success query", data:count_transaction_success})
+  } catch (error) {
+    res.status(500).send({msg:"internal server error"})
+    
+  }
+}
+
+
+module.exports = { register, login,GetAllTransactionBundlingRoute,GetAllTransactionEventsRoute,GetAllTransactionMerchandiseRoute,GetAllTransactionCounts };

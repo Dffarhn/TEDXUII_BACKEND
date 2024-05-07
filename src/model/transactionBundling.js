@@ -137,7 +137,7 @@ async function UpdatebundlingTransactionDB(id, status_data) {
     } else {
       const transaction_completed = await GetSpesificBundlingById(id);
 
-      const sendMail = sendEmail(transaction_completed[0]);
+      // const sendMail = sendEmail(transaction_completed[0]);
       return rows;
     }
 
