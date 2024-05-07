@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { Add_AdminDB, check_LoginDB, GetAllTransactionbundling, GetAllTransactionEvents, CountTransactionSuccess } = require("../model/admin");
+const { Add_AdminDB, check_LoginDB, GetAllTransactionbundling, GetAllTransactionEvents, CountTransactionSuccess, GetAllTransactionMerchandise } = require("../model/admin");
 const dotenv = require("dotenv");
 const { validateRequestBody } = require("../function/Validator");
 dotenv.config();
