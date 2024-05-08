@@ -71,7 +71,8 @@ function fetchImage(url) {
 }
 
 async function generateTransactionReceipt(transactionInfo) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async(resolve, reject) => {
+    try{
 
     console.log(transactionInfo)
 
@@ -99,25 +100,26 @@ async function generateTransactionReceipt(transactionInfo) {
     doc.text(`Total Price: $${transactionInfo.gross_amount}`, 50, 270);
 
     // Fetch merchandise photo from signed URL using node-fetch
-    fetchImage(GenerateSignedUrl(transactionInfo.data_details[0].image_merchandise,60))
-      .then((imageBuffer) => {
-        // Embed merchandise photo in PDF
-        doc.image(imageBuffer, 400, 120, { width: 200, height: 200 });
-
-        // Generate PDF content as a buffer
-        const pdfBuffer = new Promise((resolvePdf) => {
-          const buffers = [];
-          doc.on("data", (chunk) => buffers.push(chunk));
-          doc.on("end", () => resolvePdf(Buffer.concat(buffers)));
-          doc.end();
-        });
-
-        resolve(pdfBuffer);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
+       // Fetch merchandise photo from signed URL using node-fetch
+       const imageUrl = await GenerateSignedUrl(transactionInfo.data_details[0].image_merchandise, 60);
+       const imageBuffer = await fetchImage(imageUrl);
+   
+       // Embed merchandise photo in PDF
+       doc.image(imageBuffer, 400, 120, { width: 200, height: 200 });
+   
+       // Generate PDF content as a buffer
+       const pdfBuffer = new Promise((resolvePdf) => {
+         const buffers = [];
+         doc.on("data", (chunk) => buffers.push(chunk));
+         doc.on("end", () => resolvePdf(Buffer.concat(buffers)));
+         doc.end();
+       });
+   
+       return pdfBuffer;
+     } catch(err) {
+       throw err;
+    }
 }
+  )}
 
 module.exports = { generateTicket ,generateTransactionReceipt};
