@@ -24,7 +24,7 @@ async function GetAllMerchandise(sort = null) {
         console.log(row.image_merchandise[0])
         const signedUrl = await GenerateSignedUrl(row.image_merchandise[0]);
         if (signedUrl) {
-          row.image_merchandise[0] = signedUrl;
+          row.image_merchandiseURL = signedUrl;
         }
       }
       return row;
@@ -41,7 +41,7 @@ async function GetSpesificMerchandiseById(id) {
       const { rows } = await pool.query("SELECT * FROM Merchandise WHERE id = $1", [id]);
       console.log(rows[0].image_merchandise[0]);
       const generateSignedUrl = await GenerateSignedUrl(rows[0].image_merchandise[0]);
-      rows[0].image_merchandise = generateSignedUrl
+      rows[0].image_merchandiseURL = generateSignedUrl
       return rows;
     } else {
       throw new Error({ error: "Invalid input" });
@@ -60,11 +60,11 @@ async function GetSpesificMerchandiseById(id) {
 
 async function AddMerchandiseDB(data) {
   try {
-    const { name_merchandise, price_merchandise, stock_merchandise } = data;
+    const { name_merchandise, price_merchandise, stock_merchandise,deskripsi_merchandise } = data;
 
-    const Main_Data = [name_merchandise, price_merchandise, stock_merchandise, data.image_file];
+    const Main_Data = [name_merchandise, price_merchandise, stock_merchandise, data.image_file,deskripsi_merchandise];
 
-    const dataString = [name_merchandise];
+    const dataString = [name_merchandise,deskripsi_merchandise];
 
     const check_input_string = validateNoSpacesArray(dataString);
 
@@ -80,8 +80,8 @@ async function AddMerchandiseDB(data) {
     if (check_input_string) {
       // Use parameterized query to prevent SQL injection
       const queryText = `
-        INSERT INTO public.merchandise(name, stock, price,image_merchandise)
-        VALUES ($1, $2, $3,ARRAY[$4])
+        INSERT INTO public.merchandise(name, stock, price,image_merchandise,deskripsi)
+        VALUES ($1, $2, $3,ARRAY[$4],$5)
          RETURNING *;
        `;
       const values = Main_Data;

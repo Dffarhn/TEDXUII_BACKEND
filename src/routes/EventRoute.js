@@ -40,13 +40,13 @@ const Get_Event = async (req, res) => {
 const Add_Event = async (req, res) => {
   try {
     const data = req.body;
-    const require = ["name", "price", "category", "year", "venue", "held_at", "early_bid"];
+    const require = ["name", "price", "category", "year", "venue", "held_at", "early_bid","deskripsi"];
 
     const check = validateRequestBody(data, require);
     // console.log(`checkvalid = ${check}`);
 
     if (check) {
-      data.image_file = req.file.path;
+      data.image_file = req.image;
       const add_data = await AddEventDB(data);
       console.log(add_data);
       if (add_data) {
@@ -66,7 +66,7 @@ const Update_Event = async (req, res) => {
   try {
     const data_update = req.body;
     const data_id = req.params;
-    data_update.image_file = req.file.path;
+    data_update.image_file = req.image;
 
     if (!validatorUUID(data_id.id_event)) {
       throw new Error();
@@ -82,6 +82,7 @@ const Update_Event = async (req, res) => {
       held_at: data_update.held_at || null,
       image: data_update.image_file || null,
       early_bid: data_update.early_bid || null,
+      deskripsi: data_update.deskripsi || null,
     };
     const filteredData = Object.fromEntries(Object.entries(data).filter(([key, value]) => value !== null));
 

@@ -39,17 +39,18 @@ const Get_Merchandise = async (req, res) => {
 const Add_Merchandise = async (req, res) => {
   try {
     const data = req.body;
-    const require = ["name_merchandise", "price_merchandise", "stock_merchandise"];
+    const require = ["name_merchandise", "price_merchandise", "stock_merchandise","deskripsi_merchandise"];
 
     const check = validateRequestBody(data, require);
     // console.log(`checkvalid = ${check}`);
 
     if (check) {
-      data.image_file = req.file.path;
+      data.image_file = req.image;
       const add_data = await AddMerchandiseDB(data);
       console.log(add_data);
       if (add_data) {
         await flushKeysStartingWith("merchandise");
+        await flushKeysStartingWith("bundling");
         res.status(201).send({ msg: "Sucessfully added", data: add_data });
       }
     } else {
@@ -65,17 +66,18 @@ const Update_Merchandise = async (req, res) => {
   try {
     const data_update = req.body;
     const data_id = req.params;
-    data_update.image_file = req.file.path;
+    data_update.image_file = req.image;
 
     if (!validatorUUID(data_id.id_merchandise)) {
       throw new Error();
     }
     const data = {
       id_merchandise: data_id.id_merchandise || null,
-      name: data_update.name || null,
-      price: data_update.price || null,
-      stock: data_update.stock || null,
+      name: data_update.name_merchandise || null,
+      price: data_update.price_merchandise || null,
+      stock: data_update.stock_merchandise || null,
       image_merchandise: data_update.image_file || null,
+      deskripsi: data_update.deskripsi_merchandise|| null,
     };
 
     const filteredData = Object.fromEntries(Object.entries(data).filter(([key, value]) => value !== null));
@@ -85,6 +87,7 @@ const Update_Merchandise = async (req, res) => {
     const hasil_update = await UpdateMerchadiseDB(filteredData);
     if (hasil_update) {
       await flushKeysStartingWith("merchandise");
+      await flushKeysStartingWith("bundling");
       res.status(200).send({ msg: "Update Success", data: hasil_update });
     }
   } catch (error) {

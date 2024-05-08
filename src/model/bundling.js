@@ -73,10 +73,10 @@ async function GetSpesificBundlingById(id) {
 
 async function AddBundlingDB(data) {
   try {
-    const { name_bundling, price_bundling, stock_bundling, list_bundling } = data;
+    const { name_bundling, price_bundling, stock_bundling, list_bundling, deskripsi_bundling } = data;
 
-    const Main_Data = [name_bundling, price_bundling, stock_bundling, list_bundling];
-    const dataString = [name_bundling];
+    const Main_Data = [name_bundling, price_bundling, stock_bundling, list_bundling,deskripsi_bundling];
+    const dataString = [name_bundling,deskripsi_bundling];
     //check uuid
     list_bundling.forEach((element) => {
       if (!validatorUUID(element)) {
@@ -101,8 +101,8 @@ async function AddBundlingDB(data) {
     if (check_input_string) {
       // Use parameterized query to prevent SQL injection
       const queryText = `
-    INSERT INTO public.bundling(name, stock, price, list_bundling)
-    VALUES ($1, $2, $3, ARRAY(SELECT unnest($4::text[])::uuid))
+    INSERT INTO public.bundling(name, stock, price, list_bundling,deskripsi)
+    VALUES ($1, $2, $3, ARRAY(SELECT unnest($4::text[])::uuid),$5)
     RETURNING *;
 `;
       const values = Main_Data;

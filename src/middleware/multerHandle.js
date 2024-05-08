@@ -5,6 +5,8 @@ const sharp = require("sharp");
 
 const { v4: uuidv4 } = require("uuid");
 const { supabase } = require("../../supabaseBucket.js");
+const { GetSpesificEventById } = require("../model/event.js");
+const { GetSpesificMerchandiseById } = require("../model/merchandise.js");
 // const eventsStorage = multer.diskStorage({
 //   destination: function (req, file, cb) {
 //     cb(null, "./public/assets/event/"); // Specify the destination folder for event files
@@ -32,23 +34,39 @@ const eventsUpload = multer({ storage: events_storage });
 const merchandise_storage = multer.memoryStorage();
 const merchandiseUpload = multer({ storage: merchandise_storage });
 
-function convertToWebP(req, res, next) {
+async function convertToWebP(req, res, next) {
   if (!req.file) {
+    // console.log(here)
+    req.image = null
     return next();
   }
 
-  // console.log(req.file);
+  console.log(req.file);
 
   const originalFile = req.file.buffer;
-  const uuid = uuidv4();
+
+
+  let uuid = uuidv4();
 
   let uploadType = ''; // Variable to store the upload type (event or merchandise)
 
   // Check the fieldname to determine the upload type
   if (req.file.fieldname === 'eventFile') {
     uploadType = 'event';
+    if (req.params.id_event) {
+      const image_past = await GetSpesificEventById(req.params.id_event)
+      // console.log(image_past[0].image)
+      uuid = image_past[0].image
+      
+    }
   } else if (req.file.fieldname === 'merchandiseFile') {
     uploadType = 'merchandise';
+    if (req.params.id_merchandise) {
+      const image_past = await GetSpesificMerchandiseById(req.params.id_merchandise)
+      // console.log(image_past[0].image)
+      uuid = image_past[0].image_merchandise[0]
+      
+    }
   } else {
     // Handle other upload types or unknown fieldnames
     return next(new Error('Unknown upload type'));
@@ -75,7 +93,7 @@ function convertToWebP(req, res, next) {
       // Delete the original file after upload
       await sharp.cache(false); // Clear sharp's cache to release the file lock
       await sharp(originalFile).toBuffer(); // Ensure sharp finishes processing before deletion
-      req.file.path = `${uploadType}/${uuid}`
+      req.image = `${uploadType}/${uuid}`
       next(); // Call next middleware or route handler after successful conversion and upload
     })
     .catch((err) => {

@@ -39,7 +39,7 @@ const Get_Bundling = async (req, res) => {
 const Add_Bundling = async (req, res) => {
   try {
     const data = req.body;
-    const require = ["name_bundling", "price_bundling", "stock_bundling", "list_bundling"];
+    const require = ["name_bundling", "price_bundling", "stock_bundling", "list_bundling","deskripsi_bundling"];
 
     const check = validateRequestBody(data, require);
     // console.log(`checkvalid = ${check}`);
@@ -70,10 +70,11 @@ const Update_Bundling = async (req, res) => {
     }
     const data = {
       id_bundling: data_id.id_bundling || null,
-      name: data_update.name || null,
-      price: data_update.price || null,
-      stock: data_update.stock || null,
+      name: data_update.name_bundling || null,
+      price: data_update.price_bundling || null,
+      stock: data_update.stock_bundling || null,
       list_bundling: data_update.list_bundling || null,
+      deskripsi: data_update.deskripsi_bundling || null,
     };
     const filteredData = Object.fromEntries(Object.entries(data).filter(([key, value]) => value !== null));
 

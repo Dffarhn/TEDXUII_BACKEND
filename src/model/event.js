@@ -40,7 +40,7 @@ async function GetAllEvent(sort = null, year = null, name = null) {
         console.log(row.image)
         const signedUrl = await GenerateSignedUrl(row.image);
         if (signedUrl) {
-          row.image = signedUrl;
+          row.imageURL = signedUrl;
           console.log(signedUrl)
         }
       }
@@ -57,7 +57,7 @@ async function GetSpesificEventById(id) {
     if (validatorUUID(id)) {
       const { rows } = await pool.query("SELECT * FROM Event WHERE id = $1", [id]);
       const generateSignedUrl = await GenerateSignedUrl(rows[0].image);
-      rows[0].image = generateSignedUrl
+      rows[0].imageURL = generateSignedUrl
       return rows;
     } else {
       throw new Error({ error: "Invalid input" });
@@ -76,11 +76,11 @@ async function GetSpesificEventById(id) {
 
 async function AddEventDB(data) {
   try {
-    const { name, price, category, year, stock, venue, held_at, early_bid, image_file } = data;
+    const { name, price, category, year, stock, venue, held_at, early_bid, image_file, deskripsi } = data;
 
-    const Main_Data = [name, price, category, year, stock, venue, held_at, early_bid, image_file];
+    const Main_Data = [name, price, category, year, stock, venue, held_at, early_bid, image_file,deskripsi];
 
-    const dataString = [name, year, venue];
+    const dataString = [name, year, venue,deskripsi];
 
     const check_input_string = validateNoSpacesArray(dataString);
 
@@ -97,8 +97,8 @@ async function AddEventDB(data) {
     if (check_input_integer && check_input_string) {
       // Use parameterized query to prevent SQL injection
       const queryText = `
-         INSERT INTO event(name, price, category, year, stock, venue, held_at, early_bid, image)
-         VALUES ($1, $2, $3, $4,$5, $6, $7, $8, $9)
+         INSERT INTO event(name, price, category, year, stock, venue, held_at, early_bid, image,deskripsi)
+         VALUES ($1, $2, $3, $4,$5, $6, $7, $8, $9,$10)
          RETURNING *;
        `;
       const values = Main_Data;
