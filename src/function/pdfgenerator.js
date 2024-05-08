@@ -1,6 +1,7 @@
 const PDFDocument = require("pdfkit");
 const QRCode = require("qrcode");
 const https = require("https");
+const sharp = require("sharp");
 const { GenerateSignedUrl } = require("./supabaseImage");
 
 // Function to generate PDF ticket
@@ -55,14 +56,22 @@ async function generateTicket(ticketInfo) {
   });
 }
 
-function fetchImage(url) {
+function fetchImage(url, format = "jpeg") {
   return new Promise((resolve, reject) => {
     https.get(url, (response) => {
       const chunks = [];
       response.on("data", (chunk) => chunks.push(chunk));
-      response.on("end", () => {
+      response.on("end", async () => {
         const buffer = Buffer.concat(chunks);
-        resolve(buffer);
+        if (format === "jpeg") {
+          const jpgBuffer = await sharp(buffer).jpeg().toBuffer();
+          resolve(jpgBuffer);
+        } else if (format === "png") {
+          const pngBuffer = await sharp(buffer).png().toBuffer();
+          resolve(pngBuffer);
+        } else {
+          reject(new Error("Unsupported image format"));
+        }
       });
     }).on("error", (err) => {
       reject(err);
@@ -102,7 +111,7 @@ async function generateTransactionReceipt(transactionInfo) {
     // Fetch merchandise photo from signed URL using node-fetch
        // Fetch merchandise photo from signed URL using node-fetch
        const imageUrl = await GenerateSignedUrl(transactionInfo.data_details[0].image_merchandise, 60);
-       const imageBuffer = await fetchImage(imageUrl);
+       const imageBuffer = await fetchImage(imageUrl,"jpeg");
    
        // Embed merchandise photo in PDF
        doc.image(imageBuffer, 400, 120, { width: 200, height: 200 });
