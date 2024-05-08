@@ -1,5 +1,6 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
+const { GenerateSignedUrl } = require("../function/supabaseImage.js");
 
 async function GetAllEvent(sort = null, year = null, name = null) {
   let queryString = "SELECT event.*, category.nama_category AS category_name FROM event";
@@ -32,7 +33,20 @@ async function GetAllEvent(sort = null, year = null, name = null) {
 
   try {
     const { rows } = await pool.query(queryString, queryParams);
-    return rows;
+    const rowsWithSignedUrls = await Promise.all(rows.map(async (row) => {
+      console.log("masuk")
+      if (row.image && row.image.length > 0) {
+        console.log("merchandise")
+        console.log(row.image)
+        const signedUrl = await GenerateSignedUrl(row.image);
+        if (signedUrl) {
+          row.image = signedUrl;
+          console.log(signedUrl)
+        }
+      }
+      return row;
+    }));
+    return rowsWithSignedUrls;
   } catch (err) {
     throw new Error("Internal Server Error");
   }
@@ -42,7 +56,8 @@ async function GetSpesificEventById(id) {
   try {
     if (validatorUUID(id)) {
       const { rows } = await pool.query("SELECT * FROM Event WHERE id = $1", [id]);
-      // console.log(rows[0]);
+      const generateSignedUrl = await GenerateSignedUrl(rows[0].image);
+      rows[0].image = generateSignedUrl
       return rows;
     } else {
       throw new Error({ error: "Invalid input" });

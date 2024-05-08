@@ -9,11 +9,11 @@ const Get_Events = async (req, res) => {
   // Create cache key based on query parameters
   const cacheKey = `events_${sort || "default"}_${year || "default"}_${name || "default"}`;
   try {
-    const data = await GetAllEvent(sort, year, name);
+    const data_event = await GetAllEvent(sort, year, name);
 
-    if (data.length > 0) {
-      await client.setEx(cacheKey, 3600, JSON.stringify(data));
-      res.status(200).send(data);
+    if (data_event.length > 0) {
+      await client.setEx(cacheKey, 3600, JSON.stringify(data_event));
+      res.status(200).send({msg: "data ditemukan",data:data_event});
     } else {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }
@@ -25,10 +25,10 @@ const Get_Events = async (req, res) => {
 const Get_Event = async (req, res) => {
   try {
     const { id_event } = req.params;
-    const data = await GetSpesificEventById(id_event);
+    const data_event = await GetSpesificEventById(id_event);
 
-    if (data.length > 0) {
-      res.status(200).send(data);
+    if (data_event.length > 0) {
+      res.status(200).send({msg: "data ditemukan",data:data_event});
     } else {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }
