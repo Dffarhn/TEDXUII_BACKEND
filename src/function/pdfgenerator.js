@@ -71,6 +71,11 @@ function fetchImage(url) {
 
 async function generateTransactionReceipt(transactionInfo) {
   return new Promise((resolve, reject) => {
+
+    console.log(transactionInfo)
+
+    console.log("generating transaction");
+    console.log(transactionInfo.data_details[0].image_merchandiseURL)
     // Create a document
     const doc = new PDFDocument({ margin: 50 });
 
