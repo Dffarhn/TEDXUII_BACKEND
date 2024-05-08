@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3002;
 app.use(helmet());
 app.use(cookieparser());
 const corsOptions = {
-  origin: "http://127.0.0.1:3000", // Replace 'https://example.com' with your specific URL
+  origin: "*", // Replace 'https://example.com' with your specific URL
   optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
   methods: ["GET", "POST", "PUT", "DELETE"], // Allow specified HTTP methods
 };
