@@ -110,8 +110,8 @@ async function generateTransactionReceipt(transactionInfo) {
 
     // Fetch merchandise photo from signed URL using node-fetch
        // Fetch merchandise photo from signed URL using node-fetch
-       const imageUrl = await GenerateSignedUrl(transactionInfo.data_details[0].image_merchandise, 60);
-       const imageBuffer = await fetchImage(imageUrl,"jpeg");
+       const imageUrl = await GenerateSignedUrl(transactionInfo.data_details[0].image_merchandise, 120);
+       const imageBuffer = await fetchImage(imageUrl,"png");
    
        // Embed merchandise photo in PDF
        doc.image(imageBuffer, 400, 120, { width: 200, height: 200 });
