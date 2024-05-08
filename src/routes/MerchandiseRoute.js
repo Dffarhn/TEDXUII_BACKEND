@@ -8,11 +8,11 @@ const Get_Merchandises = async (req, res) => {
   const cacheKey = `merchandises_${sort || "default"}`;
 
   try {
-    // console.log(`Get_Merchandises`)
-    const data = await GetAllMerchandise(sort);
-    if (data.length > 0) {
-      await client.setEx(cacheKey, 3600, JSON.stringify(data));
-      res.status(200).send(data);
+    console.log(`Get_Merchandises`)
+    const data_merchandise = await GetAllMerchandise(sort);
+    if (data_merchandise.length > 0) {
+      await client.setEx(cacheKey, 3600, JSON.stringify(data_merchandise));
+      res.status(200).send({msg:"succes get all data ", data: data_merchandise});
     } else {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }

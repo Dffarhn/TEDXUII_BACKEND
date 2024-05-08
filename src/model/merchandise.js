@@ -1,5 +1,6 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
+const { GenerateSignedUrl } = require("../function/supabaseImage.js");
 
 async function GetAllMerchandise(sort = null) {
   let queryString = "SELECT * FROM Merchandise";
@@ -14,7 +15,21 @@ async function GetAllMerchandise(sort = null) {
 
   try {
     const { rows } = await pool.query(queryString, queryParams);
-    return rows;
+
+    console.log(rows[0]);
+    const rowsWithSignedUrls = await Promise.all(rows.map(async (row) => {
+      console.log("masuk")
+      if (row.image_merchandise && row.image_merchandise.length > 0) {
+        console.log("merchandise")
+        console.log(row.image_merchandise[0])
+        const signedUrl = await GenerateSignedUrl(row.image_merchandise[0], 3600);
+        if (signedUrl) {
+          row.image_merchandise[0] = signedUrl;
+        }
+      }
+      return row;
+    }));
+    return rowsWithSignedUrls;
   } catch (err) {
     throw new Error("Internal Server Error");
   }

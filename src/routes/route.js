@@ -56,15 +56,15 @@ route.delete("/bundling/:id_bundling", Auth_Access, Delete_Bundling);
 //route Merchandise
 route.get("/merchandises", redisCacheMiddleware_Merchandises, Get_Merchandises);
 route.get("/merchandise/:id_merchandise", Get_Merchandise);
-route.post("/merchandise", Auth_Access, merchandiseUpload.single("image_merchandise"), convertToWebP, Add_Merchandise);
-route.patch("/merchandise/:id_merchandise", Auth_Access, merchandiseUpload.single("image_merchandise"), convertToWebP, Update_Merchandise);
+route.post("/merchandise", Auth_Access, merchandiseUpload.single("merchandiseFile"), convertToWebP, Add_Merchandise);
+route.patch("/merchandise/:id_merchandise", Auth_Access, merchandiseUpload.single("merchandiseFile"), convertToWebP, Update_Merchandise);
 route.delete("/merchandise/:id_merchandise", Auth_Access, Delete_Merchandise);
 
 // Route events
 route.get("/events", redisCacheMiddleware_Events, Get_Events);
 route.get("/event/:id_event", Get_Event);
-route.post("/event", Auth_Access, eventsUpload.single("image_event"), convertToWebP, Add_Event);
-route.patch("/event/:id_event", Auth_Access, eventsUpload.single("image_event"), convertToWebP, Update_Event);
+route.post("/event", Auth_Access, eventsUpload.single("eventFile"), convertToWebP, Add_Event);
+route.patch("/event/:id_event", Auth_Access, eventsUpload.single("eventFile"), convertToWebP, Update_Event);
 route.delete("/event/:id_event", Auth_Access, Delete_Event);
 
 //Midtrans Payment routes

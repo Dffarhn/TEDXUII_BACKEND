@@ -6,7 +6,7 @@ const redisCacheMiddleware_Bundling = async (req, res, next) => {
   let chechkredis = await client.get(cacheKey);
   if (chechkredis) {
     // client.del(cacheKey)
-    res.send(JSON.parse(chechkredis));
+    res.status(200).send({msg: "success query", data:JSON.parse(chechkredis)})
   } else {
     console.log("miss");
     next();
@@ -20,7 +20,7 @@ const redisCacheMiddleware_Events = async (req, res, next) => {
   let chechkredis = await client.get(cacheKey);
   if (chechkredis) {
     // client.del(cacheKey)
-    res.send(JSON.parse(chechkredis));
+    res.status(200).send({msg: "success query", data:JSON.parse(chechkredis)})
   } else {
     console.log("miss");
     next();
@@ -32,7 +32,7 @@ const redisCacheMiddleware_Merchandises = async (req, res, next) => {
   let chechkredis = await client.get(cacheKey);
   if (chechkredis) {
     // client.del(cacheKey)
-    res.send(JSON.parse(chechkredis));
+    res.status(200).send({msg: "success query", data:JSON.parse(chechkredis)})
   } else {
     console.log("miss");
     next();
