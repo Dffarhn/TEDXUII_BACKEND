@@ -80,7 +80,7 @@ async function AddMerchandiseDB(data) {
     if (check_input_string) {
       // Use parameterized query to prevent SQL injection
       const queryText = `
-        INSERT INTO public.merchandise(name, stock, price,image_merchandise,deskripsi)
+        INSERT INTO public.merchandise(name, price, stock,image_merchandise,deskripsi)
         VALUES ($1, $2, $3,ARRAY[$4],$5)
          RETURNING *;
        `;
