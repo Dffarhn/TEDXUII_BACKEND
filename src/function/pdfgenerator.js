@@ -1,5 +1,6 @@
 const PDFDocument = require("pdfkit");
 const QRCode = require("qrcode");
+const fetch = require("isomorphic-fetch");
 
 // Function to generate PDF ticket
 async function generateTicket(ticketInfo) {
@@ -53,4 +54,55 @@ async function generateTicket(ticketInfo) {
   });
 }
 
-module.exports = { generateTicket };
+async function generateTransactionReceipt(transactionInfo) {
+  return new Promise((resolve, reject) => {
+    // Create a document
+    const doc = new PDFDocument({ margin: 50 });
+
+    // Set font
+    doc.font("Helvetica");
+
+    // Add background color and header (TEDx color scheme: red, white, black)
+    doc.rect(0, 0, 612, 100).fill("#e62b1e"); // TEDx Red
+    doc.fillColor("#fff").fontSize(32).text("Merchandise Transaction Receipt", { align: "center" });
+
+    // Add transaction details section
+    doc.fontSize(18).fillColor("#000").text("Transaction Details", 50, 130);
+
+    // Add merchandise details for single item
+    doc.fontSize(14).text(`Transaction ID: ${transactionInfo.id}`, 50, 170);
+    doc.text(`Date: ${transactionInfo.created_at}`, 50, 190);
+    doc.text(`Item Name: ${transactionInfo.buyer_details[0].username}`, 50, 210);
+    doc.text(`Quantity: ${transactionInfo.quantity}`, 50, 230);
+    doc.text(`Price: $${transactionInfo.data_details[0].price}`, 50, 250);
+    doc.text(`Total Price: $${transactionInfo.gross_amount}`, 50, 270);
+
+    // Fetch merchandise photo from signed URL using node-fetch
+    fetch(transactionInfo.data_details[0].image_merchandiseURL)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch image: ${res.status} ${res.statusText}`);
+        }
+        return res.buffer();
+      })
+      .then((imageBuffer) => {
+        // Embed merchandise photo in PDF
+        doc.image(imageBuffer, 400, 120, { width: 200, height: 200 });
+
+        // Generate PDF content as a buffer
+        const pdfBuffer = new Promise((resolvePdf) => {
+          const buffers = [];
+          doc.on("data", (chunk) => buffers.push(chunk));
+          doc.on("end", () => resolvePdf(Buffer.concat(buffers)));
+          doc.end();
+        });
+
+        resolve(pdfBuffer);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+module.exports = { generateTicket ,generateTransactionReceipt};

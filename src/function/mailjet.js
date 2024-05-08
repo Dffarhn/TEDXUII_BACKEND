@@ -1,13 +1,19 @@
 const dotenv = require("dotenv");
-const { generateTicket } = require("./pdfgenerator");
+const { generateTicket, generateTransactionReceipt } = require("./pdfgenerator");
 dotenv.config();
 
 const Mailjet = require("node-mailjet");
 const mailjet = Mailjet.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 
-async function sendEmail(data) {
+async function sendEmail(data,category) {
   return new Promise(async (resolve, reject) => {
-    const pdfBuffer = await generateTicket(data);
+    let pdfBuffer = null
+
+    if (category ==="event") {    
+       pdfBuffer = await generateTicket(data);
+    }else if (category ==="merchandise") {
+      pdfBuffer = await generateTransactionReceipt(data); 
+    }
     const request = mailjet.post("send", { version: "v3.1" }).request({
       Messages: [
         {
