@@ -24,10 +24,10 @@ const Get_Merchandises = async (req, res) => {
 const Get_Merchandise = async (req, res) => {
   try {
     const { id_merchandise } = req.params;
-    const data = await GetSpesificMerchandiseById(id_merchandise);
+    const data_merchan = await GetSpesificMerchandiseById(id_merchandise);
 
-    if (data.length > 0) {
-      res.status(200).send(data);
+    if (data_merchan.length > 0) {
+      res.status(200).send({msg:"berhasil masuk",data:data_merchan});
     } else {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }

@@ -22,7 +22,7 @@ async function GetAllMerchandise(sort = null) {
       if (row.image_merchandise && row.image_merchandise.length > 0) {
         console.log("merchandise")
         console.log(row.image_merchandise[0])
-        const signedUrl = await GenerateSignedUrl(row.image_merchandise[0], 3600);
+        const signedUrl = await GenerateSignedUrl(row.image_merchandise[0]);
         if (signedUrl) {
           row.image_merchandise[0] = signedUrl;
         }
@@ -39,7 +39,9 @@ async function GetSpesificMerchandiseById(id) {
   try {
     if (validatorUUID(id)) {
       const { rows } = await pool.query("SELECT * FROM Merchandise WHERE id = $1", [id]);
-      console.log(rows);
+      console.log(rows[0].image_merchandise[0]);
+      const generateSignedUrl = await GenerateSignedUrl(rows[0].image_merchandise[0]);
+      rows[0].image_merchandise = generateSignedUrl
       return rows;
     } else {
       throw new Error({ error: "Invalid input" });
