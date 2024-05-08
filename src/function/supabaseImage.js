@@ -18,9 +18,9 @@ async function generateSignedUrl(filePath, expirationSeconds) {
 }
 
 // Example usage:
-async function GenerateSignedUrl(filepath) {
+async function GenerateSignedUrl(filepath, expirationSeconds = 36000) {
   const filePath = filepath;
-  const expirationSeconds = 3600;
+  const expiration = expirationSeconds ? expirationSeconds : 36000;
 
   const signedUrl = await generateSignedUrl(filePath, expirationSeconds);
   if (signedUrl) {

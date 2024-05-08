@@ -1,6 +1,7 @@
 const PDFDocument = require("pdfkit");
 const QRCode = require("qrcode");
 const https = require("https");
+const { GenerateSignedUrl } = require("./supabaseImage");
 
 // Function to generate PDF ticket
 async function generateTicket(ticketInfo) {
@@ -75,7 +76,7 @@ async function generateTransactionReceipt(transactionInfo) {
     console.log(transactionInfo)
 
     console.log("generating transaction");
-    console.log(transactionInfo.data_details[0].image_merchandiseURL)
+    console.log(transactionInfo.data_details[0].image_merchandise)
     // Create a document
     const doc = new PDFDocument({ margin: 50 });
 
@@ -98,7 +99,7 @@ async function generateTransactionReceipt(transactionInfo) {
     doc.text(`Total Price: $${transactionInfo.gross_amount}`, 50, 270);
 
     // Fetch merchandise photo from signed URL using node-fetch
-    fetchImage(transactionInfo.data_details[0].image_merchandiseURL)
+    fetchImage(GenerateSignedUrl(transactionInfo.data_details[0].image_merchandise,60))
       .then((imageBuffer) => {
         // Embed merchandise photo in PDF
         doc.image(imageBuffer, 400, 120, { width: 200, height: 200 });
