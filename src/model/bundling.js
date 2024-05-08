@@ -101,7 +101,7 @@ async function AddBundlingDB(data) {
     if (check_input_string) {
       // Use parameterized query to prevent SQL injection
       const queryText = `
-    INSERT INTO public.bundling(name, stock, price, list_bundling,deskripsi)
+    INSERT INTO public.bundling(name, price, stock, list_bundling,deskripsi)
     VALUES ($1, $2, $3, ARRAY(SELECT unnest($4::text[])::uuid),$5)
     RETURNING *;
 `;
