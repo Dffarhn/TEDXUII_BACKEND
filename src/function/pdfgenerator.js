@@ -1,6 +1,6 @@
 const PDFDocument = require("pdfkit");
 const QRCode = require("qrcode");
-const fetch = require("isomorphic-fetch");
+const https = require("https");
 
 // Function to generate PDF ticket
 async function generateTicket(ticketInfo) {
@@ -54,6 +54,21 @@ async function generateTicket(ticketInfo) {
   });
 }
 
+function fetchImage(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, (response) => {
+      const chunks = [];
+      response.on("data", (chunk) => chunks.push(chunk));
+      response.on("end", () => {
+        const buffer = Buffer.concat(chunks);
+        resolve(buffer);
+      });
+    }).on("error", (err) => {
+      reject(err);
+    });
+  });
+}
+
 async function generateTransactionReceipt(transactionInfo) {
   return new Promise((resolve, reject) => {
     // Create a document
@@ -78,13 +93,7 @@ async function generateTransactionReceipt(transactionInfo) {
     doc.text(`Total Price: $${transactionInfo.gross_amount}`, 50, 270);
 
     // Fetch merchandise photo from signed URL using node-fetch
-    fetch(transactionInfo.data_details[0].image_merchandiseURL)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Failed to fetch image: ${res.status} ${res.statusText}`);
-        }
-        return res.buffer();
-      })
+    fetchImage(transactionInfo.data_details[0].image_merchandiseURL)
       .then((imageBuffer) => {
         // Embed merchandise photo in PDF
         doc.image(imageBuffer, 400, 120, { width: 200, height: 200 });
