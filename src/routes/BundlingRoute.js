@@ -8,11 +8,11 @@ const Get_Bundlings = async (req, res) => {
   const { sort } = req.query;
   const cacheKey = `bundlings_${sort || "default"}`;
   try {
-    const data = await GetAllBundling(sort);
+    const data_bundling = await GetAllBundling(sort);
 
-    if (data.length > 0) {
-      await client.setEx(cacheKey, 3600, JSON.stringify(data));
-      res.status(200).send(data);
+    if (data_bundling.length > 0) {
+      await client.setEx(cacheKey, 3600, JSON.stringify(data_bundling));
+      res.status(200).send({msg: "data ditemukan",data:data_bundling});
     } else {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }
@@ -24,10 +24,10 @@ const Get_Bundlings = async (req, res) => {
 const Get_Bundling = async (req, res) => {
   try {
     const { id_bundling } = req.params;
-    const data = await GetSpesificBundlingById(id_bundling);
+    const data_bundling = await GetSpesificBundlingById(id_bundling);
 
-    if (data.length > 0) {
-      res.status(200).send(data);
+    if (data_bundling.length > 0) {
+      res.status(200).send({msg: "data ditemukan",data:data_bundling});
     } else {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }

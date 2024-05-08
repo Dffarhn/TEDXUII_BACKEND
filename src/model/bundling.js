@@ -1,5 +1,6 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
+const { GenerateSignedUrl } = require("../function/supabaseImage.js");
 
 async function GetAllBundling(sort = null) {
   let queryString = "SELECT b.*,json_agg(m.*) AS items_details FROM bundling b JOIN merchandise m ON m.id = ANY(b.list_bundling) GROUP BY b.id, b.name, b.stock, b.price, b.list_bundling, b.created_at";
@@ -14,6 +15,20 @@ async function GetAllBundling(sort = null) {
 
   try {
     const { rows } = await pool.query(queryString, queryParams);
+    // console.log(rows[0].items_details[0]);
+    await Promise.all(rows[0].items_details.map(async (row,index) => {
+      // console.log("masuk")
+      if (row.image_merchandise[0] && row.image_merchandise.length > 0) {
+        // console.log("merchandise")
+        // console.log(row.image_merchandise[0])
+        const signedUrl = await GenerateSignedUrl(row.image_merchandise[0]);
+        if (signedUrl) {
+          rows[0].items_details[index].image_merchandise[0] = signedUrl;
+          // console.log(signedUrl)
+        }
+      }
+      return row;
+    }));
     return rows;
   } catch (err) {
     throw new Error("Internal Server Error");
@@ -26,6 +41,19 @@ async function GetSpesificBundlingById(id) {
       const { rows } = await pool.query("SELECT b.*,json_agg(m.*) AS items_details FROM bundling b JOIN merchandise m ON m.id= ANY(b.list_bundling) WHERE b.id = $1 GROUP BY b.id, b.name, b.stock, b.price, b.list_bundling, b.created_at", [
         id,
       ]);
+      await Promise.all(rows[0].items_details.map(async (row,index) => {
+        // console.log("masuk")
+        if (row.image_merchandise[0] && row.image_merchandise.length > 0) {
+          // console.log("merchandise")
+          // console.log(row.image_merchandise[0])
+          const signedUrl = await GenerateSignedUrl(row.image_merchandise[0]);
+          if (signedUrl) {
+            rows[0].items_details[index].image_merchandise[0] = signedUrl;
+            // console.log(signedUrl)
+          }
+        }
+        return row;
+      }));
       console.log(rows);
       return rows;
     } else {
