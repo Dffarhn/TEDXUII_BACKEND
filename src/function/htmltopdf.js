@@ -91,7 +91,7 @@ async function generateHTMLPDFEvent(data) {
                 <div class="event-details">
                 <h2>TEDxUII</h2>
                 <p>Date: ${data.data_details[0].held_at}</p>
-                <p>Time: ${data.data_details[0].time_start} - ${data.data_details[0].time_start} WIB</p>
+                <p>Time: ${data.data_details[0].time_start} - ${data.data_details[0].time_end} WIB</p>
                 <p>Venue: ${data.data_details[0].venue}</p>
                 </div>
                 <div class="ticket-info">
