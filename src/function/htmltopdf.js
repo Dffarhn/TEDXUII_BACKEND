@@ -115,7 +115,7 @@ function generateHTMLPDF(data) {
       const htmlWithQR = htmlContent.replace('<!-- Insert QR code image here -->', `<img src="${qrCodeUrl}" alt="QR Code">`);
 
       // Generate PDF from HTML with QR code
-      pdf.create(htmlWithQR).toBuffer(function (err, buffer) {
+        pdf.create(htmlWithQR).toBuffer(function (err, buffer) {
         if (err) {
           console.error('Error generating PDF:', err);
           reject(err);
