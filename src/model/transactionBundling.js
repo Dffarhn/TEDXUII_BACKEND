@@ -135,9 +135,9 @@ async function UpdatebundlingTransactionDB(id, status_data) {
       await flushKeysStartingWith("bundling");
       return rows;
     } else {
-      const transaction_completed = await GetSpesificBundlingById(id);
+      const transaction_completed = await GetSpesificTransactionbundlingById(id);
 
-      // const sendMail = sendEmail(transaction_completed[0]);
+      const sendMail = sendEmail(transaction_completed[0],"bundling");
       return rows;
     }
 
