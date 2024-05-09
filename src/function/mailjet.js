@@ -3,7 +3,6 @@ const { generateTicket, generateTransactionReceipt } = require("./pdfgenerator")
 dotenv.config();
 
 const Mailjet = require("node-mailjet");
-const { generateHTMLPDF } = require("./htmltopdf");
 const mailjet = Mailjet.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 
 async function sendEmail(data,category) {
@@ -13,7 +12,7 @@ async function sendEmail(data,category) {
     let request = null
 
     if (category ==="event") {    
-       pdfBuffer = await generateHTMLPDF(data);
+       pdfBuffer = await generateTicket(data);
        filename = "ticket.pdf";
       request = mailjet.post("send", { version: "v3.1" }).request({
          Messages: [
