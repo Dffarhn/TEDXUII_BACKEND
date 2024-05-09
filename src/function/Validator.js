@@ -45,7 +45,7 @@ function validatorUUID(uuid) {
 }
 
 function validateRequestBody(body, requiredFields) {
-  // console.log(body);
+  console.log(body);
   // console.log(requiredFields);
   for (const field of requiredFields) {
     if (typeof body[field] === "string") {
