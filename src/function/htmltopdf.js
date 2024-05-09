@@ -117,7 +117,7 @@ async function generateHTMLPDF(data) {
 
     // Generate QR code data and embed in HTML
     try {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
         const page = await browser.newPage();
   
         // Set content to the HTML
