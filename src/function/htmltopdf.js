@@ -1,8 +1,17 @@
-const pdf = require('html-pdf');
+const puppeteer = require('puppeteer');
 const QRCode = require('qrcode'); // Import QRCode module
 
-function generateHTMLPDF(data) {
-  return new Promise((resolve, reject) => {
+async function generateHTMLPDF(data) {
+  return new Promise(async(resolve, reject) => {
+    const qrCodeData = JSON.stringify({ id: data.id, name: data.buyer_details[0].username });
+
+    // Generate QR code URL
+    QRCode.toDataURL(qrCodeData, async (err, qrCodeUrl) => {
+      if (err) {
+        console.error('Error generating QR code:', err);
+        reject(err);
+        return;
+      }
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
@@ -11,11 +20,14 @@ function generateHTMLPDF(data) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>TEDx Event Ticket</title>
       <style>
+        html {
+            -webkit-print-color-adjust: exact;
+        }
         body {
           font-family: Arial, sans-serif;
           margin: 0;
-          padding: 20px;
-          background: linear-gradient(to bottom, #d81826, #ff6347);
+          padding: 50px;
+          background-color: red !important;
           color: #333;
         }
         .ticket-container {
@@ -57,6 +69,7 @@ function generateHTMLPDF(data) {
         .footer {
           font-size: 12px;
           text-align: center;
+          background-color: red !important;
           flex-basis: 100%; /* Full width for footer */
         }
         .qr-code {
@@ -91,7 +104,7 @@ function generateHTMLPDF(data) {
           <p>Phone: ${data.buyer_details[0].phone_number}</p>
         </div>
         <div class="qr-code">
-          <!-- Insert QR code image here -->
+            <img src="${qrCodeUrl}" alt="QR Code">
         </div>
         <div class="footer">
           <p>This ticket is non-transferable and must be presented upon entry.</p>
@@ -103,29 +116,24 @@ function generateHTMLPDF(data) {
     `;
 
     // Generate QR code data and embed in HTML
-    const qrCodeData = `id:${data.id}, name:${data.buyer_details[0].username}`;
-    QRCode.toDataURL(qrCodeData, { type: "image/png" }, async (err, qrCodeUrl) => {
-      if (err) {
-        console.error('Error generating QR code:', err);
-        reject(err);
-        return;
+    try {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+  
+        // Set content to the HTML
+        await page.setContent(htmlContent);  
+        // Generate PDF and return buffer
+        const pdfBuffer = await page.pdf({ format: 'A4' });
+  
+        await browser.close();
+        console.log('PDF generated successfully.');
+        resolve(pdfBuffer);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        reject(error);
       }
 
-      // Update HTML content with QR code image
-      const htmlWithQR = htmlContent.replace('<!-- Insert QR code image here -->', `<img src="${qrCodeUrl}" alt="QR Code">`);
-
-      // Generate PDF from HTML with QR code
-        pdf.create(htmlWithQR).toBuffer(function (err, buffer) {
-        if (err) {
-          console.error('Error generating PDF:', err);
-          reject(err);
-          return;
-        }
-
-        // Buffer is successfully generated, resolve with the buffer
-        resolve(buffer);
-      });
-    });
+    })
   });
 }
 
