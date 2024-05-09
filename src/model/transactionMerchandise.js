@@ -25,11 +25,11 @@ async function GetSpesificTransactionMerchandiseById(id) {
 
 async function AddMerchandiseTransactionDB(data, data_merchandise, data_buyer) {
   try {
-    console.log(data_merchandise.stock);
+    // console.log(data_merchandise.stock);
     const { id_merchandise, quantity } = data;
 
     if (data_merchandise.stock > 0 && data_merchandise.stock >= quantity) {
-      console.log("hitascsacasc");
+      // console.log("hitascsacasc");
 
       const Main_Data = [id_merchandise, data_buyer.id_buyer, quantity];
       const dataString = [id_merchandise, data_buyer.id_buyer];
@@ -71,7 +71,7 @@ async function AddMerchandiseTransactionDB(data, data_merchandise, data_buyer) {
           `;
 
         const values = Main_Data;
-        console.log(values);
+        // console.log(values);
 
         // Execute the query using parameterized values
         const { rows } = await pool.query(queryText_transaction, values.slice(0, 4));
@@ -82,7 +82,7 @@ async function AddMerchandiseTransactionDB(data, data_merchandise, data_buyer) {
           console.log(rows[0].id);
           const dataSpesific = await GetSpesificTransactionMerchandiseById(rows[0].id);
 
-          console.log("HITTTTTTTTTTTTTTTTTTTTTTTTT");
+          // console.log("HITTTTTTTTTTTTTTTTTTTTTTTTT");
           return dataSpesific;
         }
       } else {
@@ -109,8 +109,8 @@ async function UpdateMerchandiseTransactionDB(id, status_data) {
 
     // Tambahkan id_merchandise ke values array
 
-    console.log("Update query:", queryText);
-    console.log("Values:", values);
+    // console.log("Update query:", queryText);
+    // console.log("Values:", values);
     // Execute your database update query using the queryText and values
     // Example:
     const rows = await pool.query(queryText, values);

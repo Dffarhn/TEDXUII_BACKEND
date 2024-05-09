@@ -53,7 +53,7 @@ const Notification_Transaction = async (req, res) => {
   const release_midtrans = await mutex_midtrans.acquire();
   try {
     const receivedJson = req.body;
-    console.log("masuk");
+    // console.log("masuk");
     const info_payment = await NotificationPayment(receivedJson);
 
     if (info_payment) {

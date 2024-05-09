@@ -109,8 +109,8 @@ async function UpdateEventTransactionDB(id, status_data) {
 
     // Tambahkan id_event ke values array
 
-    console.log("Update query:", queryText);
-    console.log("Values:", values);
+    // console.log("Update query:", queryText);
+    // console.log("Values:", values);
     // Execute your database update query using the queryText and values
     // Example:
     const rows = await pool.query(queryText, values);

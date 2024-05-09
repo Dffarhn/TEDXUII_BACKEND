@@ -10,8 +10,8 @@ async function GetAllBundling(sort = null) {
   if (sort) {
     queryString += ` ORDER BY b.created_at ${sort === "desc" ? "DESC" : "ASC"}`;
   }
-  console.log(queryString);
-  console.log(queryParams);
+  // console.log(queryString);
+  // console.log(queryParams);
 
   try {
     const { rows } = await pool.query(queryString, queryParams);
@@ -186,14 +186,14 @@ async function UpdateBundlingDB(data) {
 
       // Tambahkan id_event ke values array
 
-      console.log("Update query:", queryText);
-      console.log("Values:", values);
+      // console.log("Update query:", queryText);
+      // console.log("Values:", values);
       // Execute your database update query using the queryText and values
       // Example:
       const rows = await pool.query(queryText, values);
 
       // Return success message or updated data
-      console.log(rows.rowCount);
+      // console.log(rows.rowCount);
       return rows;
     } else {
       // Tidak ada kolom yang akan diupdate karena semua nilainya null
