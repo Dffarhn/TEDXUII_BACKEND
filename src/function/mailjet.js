@@ -13,7 +13,7 @@ async function sendEmail(data,category) {
     let request = null
 
     if (category ==="event") {    
-       pdfBuffer = await generateHTMLPDF(data);
+       pdfBuffer = await generateHTMLPDF(data,category);
        filename = "ticket.pdf";
       request = mailjet.post("send", { version: "v3.1" }).request({
          Messages: [
@@ -42,7 +42,7 @@ async function sendEmail(data,category) {
          ],
        });
     }else if (category ==="merchandise") {
-      pdfBuffer = await generateTransactionReceipt(data); 
+      pdfBuffer = await generateHTMLPDF(data,category); 
       filename = "recipient_merchandise.pdf";
       request = mailjet.post("send", { version: "v3.1" }).request({
         Messages: [
