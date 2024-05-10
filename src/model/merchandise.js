@@ -44,10 +44,10 @@ async function GetSpesificMerchandiseById(id) {
       rows[0].image_merchandiseURL = generateSignedUrl
       return rows;
     } else {
-      throw new Error({ error: "Invalid input" });
+      throw new Error("Invalid input");
     }
   } catch (err) {
-    throw new Error({ error: "Internal Server Error" });
+    throw new Error(err.message);
   }
 }
 
@@ -74,7 +74,7 @@ async function AddMerchandiseDB(data) {
         dataInteger[i] = parseInt(dataInteger[i], 10);
       }
     } else {
-      throw new Error();
+      throw new Error("Your data is not valid");
     }
 
     if (check_input_string) {
@@ -94,11 +94,11 @@ async function AddMerchandiseDB(data) {
 
       return rows;
     } else {
-      throw new Error({ error: "Internal Server Error" });
+      throw new Error("Your data is not valid");
     }
   } catch (error) {
     console.log(error);
-    throw new Error({ error: "Internal Server Error" });
+    throw new Error(error.message);
   }
 }
 
@@ -116,7 +116,7 @@ async function UpdateMerchadiseDB(data) {
             updateColumns.push(key);
             values.push(data[key]);
           } else {
-            throw new Error();
+            throw new Error("Your data is not valid");
           }
         } else {
           console.log(data[key]);
@@ -125,7 +125,7 @@ async function UpdateMerchadiseDB(data) {
             // Assuming price should be a number, parse it
             values.push(parseInt(data[key], 10));
           } else {
-            throw new Error();
+            throw new Error("Your data is not valid");
           }
         }
       }
@@ -166,7 +166,7 @@ async function UpdateMerchadiseDB(data) {
       return rows;
     } else {
       // Tidak ada kolom yang akan diupdate karena semua nilainya null
-      throw new Error("No data to update");
+      throw new Error("No data to update boy");
     }
   } catch (error) {
     // Handle the error appropriately
@@ -189,7 +189,7 @@ async function DeleteMerchandiseDB(id_merchandise) {
     return rows;
   } catch (error) {
     console.log(error);
-    throw error;
+    throw error.message;
   }
 }
 

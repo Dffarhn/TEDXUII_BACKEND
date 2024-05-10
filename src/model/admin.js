@@ -77,13 +77,13 @@ async function check_LoginDB(data) {
       if (samepassword) {
         return cek_admin[0];
       } else {
-        return false;
+        throw new Error('wrong password');
       }
     } else {
-      return false;
+      throw new Error('account not found');
     }
   } else {
-    return false;
+    throw new Error('invalid input');
   }
 }
 

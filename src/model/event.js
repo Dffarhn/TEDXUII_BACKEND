@@ -60,10 +60,10 @@ async function GetSpesificEventById(id) {
       rows[0].imageURL = generateSignedUrl
       return rows;
     } else {
-      throw new Error({ error: "Invalid input" });
+      throw new Error("Invalid input" );
     }
   } catch (err) {
-    throw new Error({ error: "Internal Server Error" });
+    throw new Error("Internal Server Error" );
   }
 }
 
@@ -108,11 +108,11 @@ async function AddEventDB(data) {
 
       return rows;
     } else {
-      throw new Error({ error: "Internal Server Error" });
+      throw new Error("Your data is not valid");
     }
   } catch (error) {
     console.log(error);
-    throw new Error({ error: "Internal Server Error" });
+    throw new Error( "Internal Server Error" );
   }
 }
 
@@ -132,7 +132,7 @@ async function UpdateEventDB(data) {
             updateColumns.push(key);
             values.push(data[key]);
           } else {
-            throw new Error();
+            throw new Error("Your data is not valid");
           }
         } else {
           if (validateNumber(data[key])) {
@@ -140,7 +140,7 @@ async function UpdateEventDB(data) {
             // Assuming price should be a number, parse it
             values.push(parseInt(data[key], 10));
           } else {
-            throw new Error();
+            throw new Error("Your data is not valid");
           }
         }
       }
@@ -178,7 +178,7 @@ async function UpdateEventDB(data) {
     // Handle the error appropriately
     console.error("Error updating event:", error.message);
     // Optionally, you can throw the error again to propagate it to the calling function
-    throw error;
+    throw new Error( "Internal Server Error" );
   }
 }
 
@@ -195,7 +195,7 @@ async function DeleteEventDB(id_event) {
     return rows;
   } catch (error) {
     console.log(error);
-    throw error;
+    throw new Error( "Internal Server Error" );
   }
 }
 

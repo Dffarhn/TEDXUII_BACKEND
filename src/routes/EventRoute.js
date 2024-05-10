@@ -18,7 +18,7 @@ const Get_Events = async (req, res) => {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }
   } catch (error) {
-    res.status(500).send({ msg: "internal server error" });
+ res.status(500).send({ msg: error.message });
   }
 };
 
@@ -33,7 +33,7 @@ const Get_Event = async (req, res) => {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }
   } catch (error) {
-    res.status(500).send({ msg: "internal server error" });
+ res.status(500).send({ msg: error.message });
   }
 };
 
@@ -59,7 +59,7 @@ const Add_Event = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send({ msg: "internal server error" });
+    res.status(500).send({ msg: error.message });
   }
 };
 
@@ -96,7 +96,7 @@ const Update_Event = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send({ msg: "internal server error" });
+    res.status(500).send({ msg: error.message });
   }
 };
 
@@ -114,7 +114,7 @@ const Delete_Event = async (req, res) => {
       res.status(500).send({ msg: "invalid type input uuid" });
     }
   } catch (error) {
-    res.status(500).send({ msg: "internal server error" });
+    res.status(500).send({ msg: error.message });
   }
 };
 

@@ -17,7 +17,7 @@ const Get_Bundlings = async (req, res) => {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }
   } catch (error) {
-    res.status(500).send({ msg: "internal server error" });
+ res.status(500).send({ msg: error.message });
   }
 };
 
@@ -32,7 +32,7 @@ const Get_Bundling = async (req, res) => {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }
   } catch (error) {
-    res.status(500).send({ msg: "internal server error" });
+ res.status(500).send({ msg: error.message });
   }
 };
 
@@ -56,7 +56,7 @@ const Add_Bundling = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send({ msg: "internal server error" });
+ res.status(500).send({ msg: error.message });
   }
 };
 
@@ -85,7 +85,7 @@ const Update_Bundling = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send({ msg: "internal server error" });
+ res.status(500).send({ msg: error.message });
   }
 };
 
@@ -104,7 +104,7 @@ const Delete_Bundling = async (req, res) => {
       res.status(500).send({ msg: "invalid type input uuid" });
     }
   } catch (error) {
-    res.status(500).send({ msg: "internal server error" });
+ res.status(500).send({ msg: error.message });
   }
 };
 

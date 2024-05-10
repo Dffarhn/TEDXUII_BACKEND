@@ -32,7 +32,7 @@ const Get_Merchandise = async (req, res) => {
       res.status(200).send({ msg: "data tidak ditemukan" });
     }
   } catch (error) {
-    res.status(500).send({ msg: "internal server error" });
+    res.status(500).send({ msg: error.message});
   }
 };
 
@@ -58,7 +58,7 @@ const Add_Merchandise = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send({ msg: "internal server error" });
+    res.status(500).send({ msg: error.message });
   }
 };
 
@@ -91,8 +91,8 @@ const Update_Merchandise = async (req, res) => {
       res.status(200).send({ msg: "Update Success", data: hasil_update });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).send({ msg: "internal server error" });
+    console.log(error.message);
+    res.status(500).send({ msg: error.message });
   }
 };
 
@@ -111,7 +111,7 @@ const Delete_Merchandise = async (req, res) => {
       res.status(500).send({ msg: "invalid type input uuid" });
     }
   } catch (error) {
-    res.status(500).send({ msg: "internal server error" });
+    res.status(500).send({ msg: error.message  });
   }
 };
 

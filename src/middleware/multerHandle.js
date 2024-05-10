@@ -87,7 +87,7 @@ async function convertToWebP(req, res, next) {
         });
 
       if (error) {
-        throw error;
+        throw new error("gagal konversi image try another image");
       }
 
       // Delete the original file after upload
