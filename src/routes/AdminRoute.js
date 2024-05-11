@@ -77,7 +77,7 @@ const login = async (req, res) => {
         maxAge: 24 * 60 * 60 * 1000,
       });
 
-      res.status(200).send({ msg: "Login successful", accessToken });
+      res.status(200).send({ msg: "Login successful", token:accessToken });
     } else {
       res.status(401).send({ msg: "Invalid email or password." });
     }

@@ -11,7 +11,7 @@ const { CheckBundling } = require("../middleware/transactionMidBundling.js");
 const { Add_Transaction_Bundling } = require("./TransactionBundlingRoute.js");
 const { register, login, GetAllTransactionBundlingRoute, GetAllTransactionEventsRoute, GetAllTransactionMerchandiseRoute, GetAllTransactionCounts } = require("./AdminRoute.js");
 const { merchandiseUpload, convertToWebP, eventsUpload } = require("../middleware/multerHandle.js");
-const { Auth_Access } = require("../middleware/jwtToken.js");
+const { Auth_Access, Refresh_Access_Token } = require("../middleware/jwtToken.js");
 const { redisCacheMiddleware_Bundling, redisCacheMiddleware_Merchandises, redisCacheMiddleware_Events } = require("../middleware/Redis_Middleware.js");
 const { GetAllTransactionbundling, GetAllTransactionMerchandise, GetAllTransactionEvents, CountTransactionSuccess } = require("../model/admin.js");
 
@@ -23,8 +23,9 @@ route.get("/", (req, res) => {
 
 //admin
 route.post("/login", login);
-
 route.post("/register", register);
+
+route.get('/refreshtoken', Refresh_Access_Token)
 
 //route transaction bundling
 route.post("/transaction/bundling", Add_Transaction_Bundling);
