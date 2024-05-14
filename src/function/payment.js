@@ -55,7 +55,7 @@ function MidtransPayment(data) {
         duration: 2,
         unit: "hours",
       },
-      "callbacks": {
+      callbacks: {
         "finish": "https://tedxwebsite-umber.vercel.app/",
         "unfinish": "https://tedxuiibackend-production.up.railway.app/transaction/cancel/v1"
       },
