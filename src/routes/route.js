@@ -45,7 +45,7 @@ route.get("/transaction/count",GetAllTransactionCounts)
 
 // route.post("/transaction/notif", Notification_Transaction);
 
-route.post("/transaction/cancel/v1", Cancel_Transaction_Event);
+// route.post("/transaction/cancel/v1", Cancel_Transaction_Event);
 route.post("/transaction/cancel/v2", Expired_Transaction_Event);
 
 //route Bundling

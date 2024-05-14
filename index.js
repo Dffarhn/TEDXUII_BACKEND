@@ -8,7 +8,7 @@ const { AccessApi } = require("./src/middleware/access_api.js");
 
 const pool = require("./db_connect.js");
 const dotenv = require("dotenv");
-const { Notification_Transaction } = require("./src/routes/TransactionRoute.js");
+const { Notification_Transaction, Cancel_Transaction_Event } = require("./src/routes/TransactionRoute.js");
 dotenv.config();
 
 const app = express();
@@ -25,7 +25,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
+app.post("/transaction/cancel/v1", Cancel_Transaction_Event);
 app.post("/transaction/notif", Notification_Transaction);
 app.get("/", (req, res) => {
   // res.status(200).send("Halo world");
