@@ -89,9 +89,9 @@ const Notification_Transaction = async (req, res) => {
 const Cancel_Transaction_Event = async (req, res) => {
   try {
     // const data = req.body;
-    const {id_order} = req.query
+    const {order_id} = req.query
 
-    const cancel_payment = await CancelPayment(id_order);
+    const cancel_payment = await CancelPayment(order_id);
     if (cancel_payment.status_code === "200") {
       res.redirect("https://tedxwebsite-umber.vercel.app/")
     }
