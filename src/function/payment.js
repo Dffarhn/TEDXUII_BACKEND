@@ -87,7 +87,7 @@ function NotificationPayment(data) {
 
 function CancelPayment(data) {
   return new Promise((resolve, reject) => {
-    apiClient.transaction.cancel(data.id_transaction).then((response) => {
+    apiClient.transaction.cancel(data).then((response) => {
       resolve(response);
     });
   });

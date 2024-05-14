@@ -27,6 +27,10 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.post("/transaction/notif", Notification_Transaction);
+app.get("/", (req, res) => {
+  // res.status(200).send("Halo world");
+  res.redirect("https://tedxwebsite-umber.vercel.app/")
+});
 app.use(AccessApi);
 
 app.use(route);

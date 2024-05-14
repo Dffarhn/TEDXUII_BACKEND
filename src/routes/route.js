@@ -17,9 +17,10 @@ const { GetAllTransactionbundling, GetAllTransactionMerchandise, GetAllTransacti
 
 const route = Router();
 
-route.get("/", (req, res) => {
-  res.status(200).send("Halo world");
-});
+// route.get("/", (req, res) => {
+//   // res.status(200).send("Halo world");
+//   res.redirect("https://tedxwebsite-umber.vercel.app/")
+// });
 
 //admin
 route.post("/login", login);

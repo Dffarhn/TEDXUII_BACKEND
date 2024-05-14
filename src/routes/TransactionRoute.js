@@ -88,11 +88,12 @@ const Notification_Transaction = async (req, res) => {
 
 const Cancel_Transaction_Event = async (req, res) => {
   try {
-    const data = req.body;
+    // const data = req.body;
+    const {id_order} = req.query
 
-    const cancel_payment = await CancelPayment(data);
+    const cancel_payment = await CancelPayment(id_order);
     if (cancel_payment.status_code === "200") {
-      res.status(200).send({ message: "sucessful delete transaction", data: cancel_payment });
+      res.redirect("https://tedxwebsite-umber.vercel.app/")
     }
   } catch (error) {
     res.status(500).send({ message: "internal server error" });
