@@ -18,8 +18,6 @@ const register = async (req, res) => {
         const accessToken = jwt.sign(payload, process.env.SECRET_KEY_TOKEN, {
           expiresIn: "10m",
         });
-        // Creating refresh token not that expiry of refresh
-        //token is greater than the access token
 
         const refreshToken = jwt.sign(payload, process.env.SECRET_KEY_REFRESH_TOKEN, {
           expiresIn: "1d",

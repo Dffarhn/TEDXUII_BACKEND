@@ -112,12 +112,6 @@ async function UpdateMerchandiseTransactionDB(id, status_data) {
       WHERE id=$${values.length};
       `;
 
-      // Tambahkan id_merchandise ke values array
-
-      // console.log("Update query:", queryText);
-      // console.log("Values:", values);
-      // Execute your database update query using the queryText and values
-      // Example:
       const rows = await pool.query(queryText, values);
 
       if (status_data === "failed") {

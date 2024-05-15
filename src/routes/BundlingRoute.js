@@ -2,7 +2,6 @@ const { client } = require("../../redis_connect.js");
 const { validateNumber, validateRequestBody, validatorUUID } = require("../function/Validator.js");
 const { flushKeysStartingWith } = require("../function/redisflushupdate.js");
 const { GetAllBundling, GetSpesificBundlingById, AddBundlingDB, UpdateBundlingDB, DeleteBundlingDB } = require("../model/bundling.js");
-const { GetSpesificMerchandiseById, GetAllMerchandise, AddMerchandiseDB, UpdateMerchadiseDB, DeleteMerchandiseDB } = require("../model/merchandise.js");
 
 const Get_Bundlings = async (req, res) => {
   const { sort } = req.query;
@@ -42,8 +41,6 @@ const Add_Bundling = async (req, res) => {
     const require = ["name_bundling", "price_bundling", "stock_bundling", "list_bundling","deskripsi_bundling"];
 
     const check = validateRequestBody(data, require);
-    // console.log(`checkvalid = ${check}`);
-
     if (check) {
       const add_data = await AddBundlingDB(data);
       console.log(add_data);

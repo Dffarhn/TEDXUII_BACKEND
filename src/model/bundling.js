@@ -64,12 +64,7 @@ async function GetSpesificBundlingById(id) {
   }
 }
 
-// what data is {
-//   name_event:(String)
-//   price:(Number)
-//   category:(String)
-//   year:(Number)
-// }
+
 
 async function AddBundlingDB(data) {
   try {
@@ -184,16 +179,8 @@ async function UpdateBundlingDB(data) {
       WHERE id=$${values.length};
       `;
 
-      // Tambahkan id_event ke values array
-
-      // console.log("Update query:", queryText);
-      // console.log("Values:", values);
-      // Execute your database update query using the queryText and values
-      // Example:
       const rows = await pool.query(queryText, values);
 
-      // Return success message or updated data
-      // console.log(rows.rowCount);
       return rows;
     } else {
       // Tidak ada kolom yang akan diupdate karena semua nilainya null

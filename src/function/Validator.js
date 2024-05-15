@@ -33,8 +33,6 @@ function validateNumber(valueOrArray) {
     }
     return true; // Return true if all phone numbers pass the validation
   } else {
-    // Implement number validation logic for single value
-    // For example, check if the value is an integer
     return Number.isInteger(valueOrArray);
   }
 }

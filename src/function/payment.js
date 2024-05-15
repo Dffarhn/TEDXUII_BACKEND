@@ -2,11 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const midtransClient = require("midtrans-client");
 
-// let snap = new midtransClient.Snap({
-//   isProduction: false,
-//   serverKey: process.env.MT_SERVER_KEY,
-//   clientKey: process.env.MT_CLIENT_KEY,
-// });
+
 let apiClient = new midtransClient.Snap({
   isProduction: false,
   serverKey: process.env.MT_SERVER_KEY,

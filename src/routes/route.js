@@ -4,8 +4,6 @@ const { Get_Events, Get_Event, Add_Event, Update_Event, Delete_Event } = require
 const { Get_Merchandises, Get_Merchandise, Add_Merchandise, Update_Merchandise, Delete_Merchandise } = require("./MerchandiseRoute.js");
 const { Get_Bundlings, Get_Bundling, Add_Bundling, Update_Bundling, Delete_Bundling } = require("./BundlingRoute.js");
 const { Add_Transaction_Event, Notification_Transaction, Cancel_Transaction_Event, Expired_Transaction_Event, failedTheTransactionWithoutSelectPayment } = require("./TransactionRoute.js");
-const { CheckEvent, Add_Buyer } = require("../middleware/transactionMid.js");
-const { CheckMerchandise } = require("../middleware/transactionMidMerchandise.js");
 const { Add_Transaction_merchandise } = require("./TransactionMerchandiseRoute.js");
 const { CheckBundling } = require("../middleware/transactionMidBundling.js");
 const { Add_Transaction_Bundling } = require("./TransactionBundlingRoute.js");
@@ -18,11 +16,6 @@ const { AccessApi } = require("../middleware/access_api.js");
 
 const route = Router();
 route.use(AccessApi)
-
-// route.get("/", (req, res) => {
-//   // res.status(200).send("Halo world");
-//   res.redirect("https://tedxwebsite-umber.vercel.app/")
-// });
 
 //admin
 route.post("/login", login);
@@ -45,7 +38,6 @@ route.get("/transaction/event",Auth_Access,GetAllTransactionEventsRoute)
 
 route.get("/transaction/count",GetAllTransactionCounts)
 
-// route.post("/transaction/notif", Notification_Transaction);
 
 route.post("/transaction/cancel/v3", failedTheTransactionWithoutSelectPayment);
 route.post("/transaction/cancel/v2", Expired_Transaction_Event);
