@@ -127,19 +127,21 @@ const Expired_Transaction_Event = async (req, res) => {
 const failedTheTransactionWithoutSelectPayment = async(req,res)=>{
   try {
 
-    const data = req.body.data[0]
-    console.log(data)
+    const {data} = req.body
+    console.log(data[0])
 
-    if (data.category === "event") {
-      const update_transaction_event_toDB = await UpdateEventTransactionDBWithoutSelectPayment(data);
+    const dataTransaction = data[0]
+
+    if (dataTransaction.category === "event") {
+      const update_transaction_event_toDB = await UpdateEventTransactionDBWithoutSelectPayment(dataTransaction);
       console.log(update_transaction_event_toDB);
       res.status(200).send("Thank you for your Midtrans");
-    } else if (data.category === "merchandise") {
-      const update_transaction_Merchandise_toDB = await UpdateMerchandiseTransactionDB(data);
+    } else if (dataTransaction.category === "merchandise") {
+      const update_transaction_Merchandise_toDB = await UpdateMerchandiseTransactionDB(dataTransaction);
       console.log(update_transaction_Merchandise_toDB);
       res.status(200).send("Thank you for your Midtrans");
-    } else if (data.category === "bundling") {
-      const update_transaction_bundling_toDB = await UpdatebundlingTransactionDB(data);
+    } else if (dataTransaction.category === "bundling") {
+      const update_transaction_bundling_toDB = await UpdatebundlingTransactionDB(dataTransaction);
       console.log(update_transaction_bundling_toDB);
       res.status(200).send("Thank you for your Midtrans");
     }
