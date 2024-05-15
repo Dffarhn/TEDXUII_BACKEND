@@ -153,10 +153,10 @@ async function UpdateEventTransactionDB(id, status_data) {
   }
 }
 
-async function UpdateEventTransactionDBWithoutSelectPayment(data) {
+async function UpdateEventTransactionDBWithoutSelectPayment(dataTransaction) {
   try {
     const status_data = "failed";
-    const values = [status_data, data.id];
+    const values = [status_data, dataTransaction.id];
 
     const queryText = `
       UPDATE public.transaction_event
@@ -168,13 +168,13 @@ async function UpdateEventTransactionDBWithoutSelectPayment(data) {
 
     // const update_stock = await GetSpesificTransactionById(id);
 
-    const stock_failed = parseInt(data.quantity, 10);
+    const stock_failed = parseInt(dataTransaction.quantity, 10);
 
-    const stock_now = parseInt(data.data_details[0].stock, 10);
+    const stock_now = parseInt(dataTransaction.data_details[0].stock, 10);
 
     const stock_rollback = stock_now + stock_failed;
 
-    const id_event = data.data_details[0].id;
+    const id_event = dataTransaction.data_details[0].id;
 
     const data = {
       id_event: id_event,
