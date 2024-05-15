@@ -4,11 +4,11 @@ const helmet = require("helmet");
 const cookieparser = require("cookie-parser");
 
 const { route } = require("./src/routes/route.js");
-const { AccessApi } = require("./src/middleware/access_api.js");
 
 const pool = require("./db_connect.js");
 const dotenv = require("dotenv");
 const { Notification_Transaction, Cancel_Transaction_Event } = require("./src/routes/TransactionRoute.js");
+const { AccessApi } = require("./src/middleware/access_api.js");
 dotenv.config();
 
 const app = express();
@@ -31,7 +31,8 @@ app.get("/", (req, res) => {
   // res.status(200).send("Halo world");
   res.redirect("https://tedxwebsite-umber.vercel.app/")
 });
-app.use(AccessApi);
+
+// app.use(AccessApi);
 
 app.use(route);
 

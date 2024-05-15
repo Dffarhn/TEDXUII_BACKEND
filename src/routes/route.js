@@ -14,8 +14,10 @@ const { merchandiseUpload, convertToWebP, eventsUpload } = require("../middlewar
 const { Auth_Access, Refresh_Access_Token } = require("../middleware/jwtToken.js");
 const { redisCacheMiddleware_Bundling, redisCacheMiddleware_Merchandises, redisCacheMiddleware_Events } = require("../middleware/Redis_Middleware.js");
 const { GetAllTransactionbundling, GetAllTransactionMerchandise, GetAllTransactionEvents, CountTransactionSuccess } = require("../model/admin.js");
+const { AccessApi } = require("../middleware/access_api.js");
 
 const route = Router();
+route.use(AccessApi)
 
 // route.get("/", (req, res) => {
 //   // res.status(200).send("Halo world");
