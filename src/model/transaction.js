@@ -102,6 +102,7 @@ async function UpdateEventTransactionDB(id, status_data) {
 
     const check_transaction = await GetSpesificTransactionById(id)
     if (check_transaction[0].status ==='failed') {
+      console.log("udah failed di awal")
       return true
       
     }else{
