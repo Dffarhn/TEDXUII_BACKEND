@@ -194,9 +194,9 @@ async function UpdateBundlingDB(data) {
   }
 }
 
-async function DeleteBundlingDB(id_bundlingg) {
+async function DeleteBundlingDB(id_bundling) {
   try {
-    const data = [id_bundlingg];
+    const data = [id_bundling];
     const query = `
 
     DELETE FROM public.bundling
