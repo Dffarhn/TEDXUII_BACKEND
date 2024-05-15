@@ -99,7 +99,62 @@ async function AddbundlingTransactionDB(data, data_bundling, data_buyer) {
 
 async function UpdatebundlingTransactionDB(id, status_data) {
   try {
-    const values = [status_data, id];
+    const check_transaction = await GetSpesificTransactionbundlingById(id);
+    if (check_transaction[0].status === "failed") {
+      console.log("udah failed di awal");
+      return true;
+    } else {
+      const values = [status_data, id];
+
+      const queryText = `
+      UPDATE public.transaction_bundling
+      SET status = $1
+      WHERE id=$${values.length};
+      `;
+
+      // Tambahkan id_bundling ke values array
+
+      // console.log("Update query:", queryText);
+      // console.log("Values:", values);
+      // Execute your database update query using the queryText and values
+      // Example:
+      const rows = await pool.query(queryText, values);
+
+      if (status_data === "failed") {
+        // const update_stock = await GetSpesificTransactionbundlingById(id);
+
+        const stock_failed = parseInt(check_transaction[0].quantity, 10);
+
+        const stock_now = parseInt(check_transaction[0].data_details[0].stock, 10);
+
+        const stock_rollback = stock_now + stock_failed;
+
+        const id_bundling = check_transaction[0].data_details[0].id;
+
+        const data = {
+          id_bundling: id_bundling,
+          stock: stock_rollback,
+        };
+
+        const update_failed_payment = await UpdateBundlingDB(data);
+        await flushKeysStartingWith("bundling");
+        return rows;
+      } else {
+        const transaction_completed = await GetSpesificTransactionbundlingById(id);
+
+        const sendMail = sendEmail(transaction_completed[0], "bundling");
+        return rows;
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function UpdateBundlingTransactionDBWithoutSelectPayment(dataTransaction) {
+  try {
+    const status_data = "failed";
+    const values = [status_data, dataTransaction.id];
 
     const queryText = `
       UPDATE public.transaction_bundling
@@ -107,44 +162,29 @@ async function UpdatebundlingTransactionDB(id, status_data) {
       WHERE id=$${values.length};
       `;
 
-    // Tambahkan id_bundling ke values array
-
-    // console.log("Update query:", queryText);
-    // console.log("Values:", values);
-    // Execute your database update query using the queryText and values
-    // Example:
     const rows = await pool.query(queryText, values);
 
-    if (status_data === "failed") {
-      const update_stock = await GetSpesificTransactionbundlingById(id);
+    // const update_stock = await GetSpesificTransactionById(id);
 
-      const stock_failed = parseInt(update_stock[0].quantity, 10);
+    const stock_failed = parseInt(dataTransaction.quantity, 10);
 
-      const stock_now = parseInt(update_stock[0].data_details[0].stock, 10);
+    const stock_now = parseInt(dataTransaction.data_details[0].stock, 10);
 
-      const stock_rollback = stock_now + stock_failed;
+    const stock_rollback = stock_now + stock_failed;
 
-      const id_bundling = update_stock[0].data_details[0].id;
+    const id_bundling = dataTransaction.data_details[0].id;
 
-      const data = {
-        id_bundling: id_bundling,
-        stock: stock_rollback,
-      };
+    const data = {
+      id_bundling: id_bundling,
+      stock: stock_rollback,
+    };
 
-      const update_failed_payment = await UpdateBundlingDB(data);
-      await flushKeysStartingWith("bundling");
-      return rows;
-    } else {
-      const transaction_completed = await GetSpesificTransactionbundlingById(id);
-
-      const sendMail = sendEmail(transaction_completed[0],"bundling");
-      return rows;
-    }
-
+    const update_failed_payment = await UpdateBundlingDB(data);
+    await flushKeysStartingWith("bundling");
     return rows;
   } catch (error) {
     console.log(error);
   }
 }
 
-module.exports = { AddbundlingTransactionDB, GetSpesificTransactionbundlingById, UpdatebundlingTransactionDB };
+module.exports = { AddbundlingTransactionDB, GetSpesificTransactionbundlingById, UpdatebundlingTransactionDB, UpdateBundlingTransactionDBWithoutSelectPayment };

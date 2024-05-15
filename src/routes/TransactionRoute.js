@@ -4,8 +4,8 @@ const { NotificationPayment, CancelPayment, Cek_Notification, ExpiredPayment } =
 const { flushKeysStartingWith } = require("../function/redisflushupdate.js");
 const { CheckEvent, Add_Buyer } = require("../middleware/transactionMid.js");
 const { AddEventTransactionDB, UpdateEventTransactionDB, UpdateEventTransactionDBWithoutSelectPayment } = require("../model/transaction");
-const { UpdatebundlingTransactionDB } = require("../model/transactionBundling.js");
-const { UpdateMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
+const { UpdatebundlingTransactionDB, UpdateBundlingTransactionDBWithoutSelectPayment } = require("../model/transactionBundling.js");
+const { UpdateMerchandiseTransactionDB, UpdateMerchandiseTransactionDBWithoutSelectPayment } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
 const { Mutex } = require("async-mutex");
 
@@ -135,15 +135,15 @@ const failedTheTransactionWithoutSelectPayment = async(req,res)=>{
     if (dataTransaction.category === "event") {
       const update_transaction_event_toDB = await UpdateEventTransactionDBWithoutSelectPayment(dataTransaction);
       console.log(update_transaction_event_toDB);
-      res.status(200).send("Thank you for your Midtrans");
+      res.status(200).send({msg:"Thank you for your Midtrans"});
     } else if (dataTransaction.category === "merchandise") {
-      const update_transaction_Merchandise_toDB = await UpdateMerchandiseTransactionDB(dataTransaction);
+      const update_transaction_Merchandise_toDB = await UpdateMerchandiseTransactionDBWithoutSelectPayment(dataTransaction);
       console.log(update_transaction_Merchandise_toDB);
-      res.status(200).send("Thank you for your Midtrans");
+      res.status(200).send({msg:"Thank you for your Midtrans"});
     } else if (dataTransaction.category === "bundling") {
-      const update_transaction_bundling_toDB = await UpdatebundlingTransactionDB(dataTransaction);
+      const update_transaction_bundling_toDB = await UpdateBundlingTransactionDBWithoutSelectPayment(dataTransaction);
       console.log(update_transaction_bundling_toDB);
-      res.status(200).send("Thank you for your Midtrans");
+      res.status(200).send({msg:"Thank you for your Midtrans"});
     }
     
   } catch (error) {
