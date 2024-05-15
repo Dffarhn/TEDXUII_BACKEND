@@ -89,12 +89,23 @@ const Notification_Transaction = async (req, res) => {
 const Cancel_Transaction_Event = async (req, res) => {
   try {
     // const data = req.body;
-    const {order_id} = req.query
+    const {order_id,transaction_status} = req.query
+    
+    
+    if (transaction_status === "pending") {
+      console.log("EVENT UNFINISH LINK")
+      
+      const cancel_payment = await CancelPayment(order_id);
 
-    const cancel_payment = await CancelPayment(order_id);
-    if (cancel_payment.status_code === "200") {
+      if (cancel_payment.status_code === "200") {
+        res.redirect("https://tedxwebsite-umber.vercel.app/")
+      }
+    }else{
+      console.log("EVENT FINISH LINK")
       res.redirect("https://tedxwebsite-umber.vercel.app/")
+
     }
+
   } catch (error) {
     res.status(500).send({ message: "internal server error" });
   }
