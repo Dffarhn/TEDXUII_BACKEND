@@ -3,7 +3,7 @@ const { validateRequestBody } = require("../function/Validator");
 const { NotificationPayment, CancelPayment, Cek_Notification, ExpiredPayment } = require("../function/payment.js");
 const { flushKeysStartingWith } = require("../function/redisflushupdate.js");
 const { CheckEvent, Add_Buyer } = require("../middleware/transactionMid.js");
-const { AddEventTransactionDB, UpdateEventTransactionDB } = require("../model/transaction");
+const { AddEventTransactionDB, UpdateEventTransactionDB, UpdateEventTransactionDBWithoutSelectPayment } = require("../model/transaction");
 const { UpdatebundlingTransactionDB } = require("../model/transactionBundling.js");
 const { UpdateMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
@@ -124,4 +124,31 @@ const Expired_Transaction_Event = async (req, res) => {
   }
 };
 
-module.exports = { Add_Transaction_Event, Notification_Transaction, Cancel_Transaction_Event, Expired_Transaction_Event };
+const failedTheTransactionWithoutSelectPayment = async(req,res)=>{
+  try {
+
+    const data = req.body.data[0]
+    console.log(data)
+
+    if (data.category === "event") {
+      const update_transaction_event_toDB = await UpdateEventTransactionDBWithoutSelectPayment(data);
+      console.log(update_transaction_event_toDB);
+      res.status(200).send("Thank you for your Midtrans");
+    } else if (data.category === "merchandise") {
+      const update_transaction_Merchandise_toDB = await UpdateMerchandiseTransactionDB(data);
+      console.log(update_transaction_Merchandise_toDB);
+      res.status(200).send("Thank you for your Midtrans");
+    } else if (data.category === "bundling") {
+      const update_transaction_bundling_toDB = await UpdatebundlingTransactionDB(data);
+      console.log(update_transaction_bundling_toDB);
+      res.status(200).send("Thank you for your Midtrans");
+    }
+    
+  } catch (error) {
+
+    res.status(500).send({ message: "internal server error" });
+    
+  }
+}
+
+module.exports = { Add_Transaction_Event, Notification_Transaction, Cancel_Transaction_Event, Expired_Transaction_Event,failedTheTransactionWithoutSelectPayment };

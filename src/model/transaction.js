@@ -99,7 +99,64 @@ async function AddEventTransactionDB(data, data_event, data_buyer) {
 
 async function UpdateEventTransactionDB(id, status_data) {
   try {
-    const values = [status_data, id];
+
+    const check_transaction = await GetSpesificTransactionById(id)
+    if (check_transaction[0].status ==='failed') {
+      return true
+      
+    }else{
+
+      const values = [status_data, id];
+  
+      const queryText = `
+        UPDATE public.transaction_event
+        SET status = $1
+        WHERE id=$${values.length};
+        `;
+  
+      // Tambahkan id_event ke values array
+  
+      // console.log("Update query:", queryText);
+      // console.log("Values:", values);
+      // Execute your database update query using the queryText and values
+      // Example:
+      const rows = await pool.query(queryText, values);
+  
+      if (status_data === "failed") {
+        // const update_stock = await GetSpesificTransactionById(id);
+  
+        const stock_failed = parseInt(check_transaction[0].quantity, 10);
+  
+        const stock_now = parseInt(check_transaction[0].data_details[0].stock, 10);
+  
+        const stock_rollback = stock_now + stock_failed;
+  
+        const id_event = check_transaction[0].data_details[0].id;
+  
+        const data = {
+          id_event: id_event,
+          stock: stock_rollback,
+        };
+  
+        const update_failed_payment = await UpdateEventDB(data);
+        await flushKeysStartingWith("event");
+        return rows;
+      } else {
+        // const transaction_completed = await GetSpesificTransactionById(id);
+  
+        const sendMail = sendEmail(check_transaction[0], "event");
+        return rows;
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function UpdateEventTransactionDBWithoutSelectPayment(data) {
+  try {
+    const status_data = "failed";
+    const values = [status_data, data.id];
 
     const queryText = `
       UPDATE public.transaction_event
@@ -107,44 +164,29 @@ async function UpdateEventTransactionDB(id, status_data) {
       WHERE id=$${values.length};
       `;
 
-    // Tambahkan id_event ke values array
-
-    // console.log("Update query:", queryText);
-    // console.log("Values:", values);
-    // Execute your database update query using the queryText and values
-    // Example:
     const rows = await pool.query(queryText, values);
 
-    if (status_data === "failed") {
-      const update_stock = await GetSpesificTransactionById(id);
+    // const update_stock = await GetSpesificTransactionById(id);
 
-      const stock_failed = parseInt(update_stock[0].quantity, 10);
+    const stock_failed = parseInt(data.quantity, 10);
 
-      const stock_now = parseInt(update_stock[0].data_details[0].stock, 10);
+    const stock_now = parseInt(data.data_details[0].stock, 10);
 
-      const stock_rollback = stock_now + stock_failed;
+    const stock_rollback = stock_now + stock_failed;
 
-      const id_event = update_stock[0].data_details[0].id;
+    const id_event = data.data_details[0].id;
 
-      const data = {
-        id_event: id_event,
-        stock: stock_rollback,
-      };
+    const data = {
+      id_event: id_event,
+      stock: stock_rollback,
+    };
 
-      const update_failed_payment = await UpdateEventDB(data);
-      await flushKeysStartingWith("event");
-      return rows;
-    } else {
-      const transaction_completed = await GetSpesificTransactionById(id);
-
-      const sendMail = sendEmail(transaction_completed[0],"event");
-      return rows;
-    }
-
+    const update_failed_payment = await UpdateEventDB(data);
+    await flushKeysStartingWith("event");
     return rows;
   } catch (error) {
     console.log(error);
   }
 }
 
-module.exports = { AddEventTransactionDB, GetSpesificTransactionById, UpdateEventTransactionDB };
+module.exports = { AddEventTransactionDB, GetSpesificTransactionById, UpdateEventTransactionDB,UpdateEventTransactionDBWithoutSelectPayment };
