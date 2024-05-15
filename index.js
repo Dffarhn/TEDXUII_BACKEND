@@ -25,7 +25,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-app.post("/transaction/cancel/v1", Cancel_Transaction_Event);
+app.get("/transaction/cancel/v1", Cancel_Transaction_Event);
 app.post("/transaction/notif", Notification_Transaction);
 app.get("/", (req, res) => {
   // res.status(200).send("Halo world");
