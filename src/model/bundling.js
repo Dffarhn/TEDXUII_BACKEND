@@ -198,10 +198,8 @@ async function DeleteBundlingDB(id_bundling) {
   try {
     const data = [id_bundling];
     const query = `
-
     DELETE FROM public.bundling
 	    WHERE id = $1;
-    
     `;
     const { rows } = await pool.query(query, data);
     return rows;
