@@ -2,11 +2,13 @@ const dotenv = require("dotenv");
 dotenv.config();
 const fs = require("fs")
 const path = require("path")
+const juice = require('juice');
 const Mailjet = require("node-mailjet");
 const { generateHTMLPDFEvent, generateHTMLPDFMerchandise, generateHTMLPDFBundling } = require("./htmltopdf");
 const mailjet = Mailjet.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 
 const htmlContent = fs.readFileSync(path.join(__dirname, 'emailfile/index.html'), 'utf8');
+const inlinedHtmlContent = juice(htmlContent);
 
 async function sendEmail(data,category) {
   return new Promise(async (resolve, reject) => {
@@ -32,7 +34,7 @@ async function sendEmail(data,category) {
              ],
              Subject: "Your Ticket for TEDXUII Event",
              TextPart: "Greetings from TEDXUII!",
-             HTMLPart: htmlContent,
+             HTMLPart: inlinedHtmlContent,
              Attachments: [
                {
                  ContentType: "application/pdf",
