@@ -18,7 +18,7 @@ async function sendEmail(data, category) {
     let pdfBuffer = null;
     let filename = null;
     let request = null;
-    const htmlContent = emailbody(data);
+    const htmlContent = emailbody(data,category);
 
     if (category === "event") {
       pdfBuffer = await generateHTMLPDFEvent(data);

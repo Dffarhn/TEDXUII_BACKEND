@@ -3,9 +3,9 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function emailbody(data) {
+function emailbody(data,category) {
   let categoryDetails = '';
-  if (data.category === 'event') {
+  if (category === 'event') {
       categoryDetails = `
           Date : ${data.data_details[0].held_at}<br />
           Place : ${data.data_details[0].venue}<br />
@@ -44,11 +44,11 @@ background: linear-gradient(0deg, rgba(0,0,0,1) 17%, rgba(41,13,8,1) 21%, rgba(2
   </div>
   <div style=" padding: 0px 30px 20px 30px ; display: flex; justify-content: space-between">
     <div>
-      <p style="color: white; margin: 0"><b>${capitalizeFirstLetter(data.category)} details :</b></p>
+      <p style="color: white; margin: 0"><b>${capitalizeFirstLetter(category)} details :</b></p>
       <br />
       <p style="color: white; margin: 0">
         ID : ${data.id}<br />
-        ${capitalizeFirstLetter(data.category)} Title: ${data.data_details[0].name}<br/>
+        ${capitalizeFirstLetter(category)} Title: ${data.data_details[0].name}<br/>
         ${categoryDetails}
         Quantity : ${data.quantity}<br />
         Attendee : ${data.buyer_details[0].username}<br />
