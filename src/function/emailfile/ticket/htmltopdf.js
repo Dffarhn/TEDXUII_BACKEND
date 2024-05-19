@@ -1,20 +1,20 @@
 const puppeteer = require("puppeteer");
 const QRCode = require("qrcode"); // Import QRCode module
-const { GenerateSignedUrl } = require("./supabaseImage");
-const { GetSpesificMerchandiseById } = require("../model/merchandise");
+const { GenerateSignedUrl } = require("../../supabaseImage");
+const { GetSpesificMerchandiseById } = require("../../../model/merchandise");
 
 async function generateHTMLPDFEvent(data) {
   return new Promise(async (resolve, reject) => {
-      const qrCodeData = JSON.stringify({ id: data.id, name: data.buyer_details[0].username });
+    const qrCodeData = JSON.stringify({ id: data.id, name: data.buyer_details[0].username });
 
-      // Generate QR code URL
-      QRCode.toDataURL(qrCodeData, async (err, qrCodeUrl) => {
-        if (err) {
-          console.error("Error generating QR code:", err);
-          reject(err);
-          return;
-        }
-        const htmlContent = `
+    // Generate QR code URL
+    QRCode.toDataURL(qrCodeData, async (err, qrCodeUrl) => {
+      if (err) {
+        console.error("Error generating QR code:", err);
+        reject(err);
+        return;
+      }
+      const htmlContent = `
             <!DOCTYPE html>
             <html lang="en">
             <head>
@@ -118,24 +118,24 @@ async function generateHTMLPDFEvent(data) {
             </html>
             `;
 
-        // Generate QR code data and embed in HTML
-        try {
-          const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
-          const page = await browser.newPage();
+      // Generate QR code data and embed in HTML
+      try {
+        const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+        const page = await browser.newPage();
 
-          // Set content to the HTML
-          await page.setContent(htmlContent);
-          // Generate PDF and return buffer
-          const pdfBuffer = await page.pdf({ format: "A4" });
+        // Set content to the HTML
+        await page.setContent(htmlContent);
+        // Generate PDF and return buffer
+        const pdfBuffer = await page.pdf({ format: "A4" });
 
-          await browser.close();
-          console.log("PDF generated successfully.");
-          resolve(pdfBuffer);
-        } catch (error) {
-          console.error("Error generating PDF:", error);
-          reject(error);
-        }
-      });
+        await browser.close();
+        console.log("PDF generated successfully.");
+        resolve(pdfBuffer);
+      } catch (error) {
+        console.error("Error generating PDF:", error);
+        reject(error);
+      }
+    });
   });
 }
 async function generateHTMLPDFMerchandise(data) {
@@ -264,17 +264,17 @@ async function generateHTMLPDFMerchandise(data) {
 }
 async function generateHTMLPDFBundling(data) {
   return new Promise(async (resolve, reject) => {
-    const GetMerchandisePromises = data.data_details[0].list_bundling.map(async item => {
-        return await GetSpesificMerchandiseById(item);
-      });
+    const GetMerchandisePromises = data.data_details[0].list_bundling.map(async (item) => {
+      return await GetSpesificMerchandiseById(item);
+    });
     const GetMerchandise = await Promise.all(GetMerchandisePromises);
-    
-    const GetimagesPromises = GetMerchandise.map(async (item,index) => {
-        // console.log(item);
-        return item[0].image_merchandiseURL
-    })
-    const getimages = await Promise.all(GetimagesPromises)
-    
+
+    const GetimagesPromises = GetMerchandise.map(async (item, index) => {
+      // console.log(item);
+      return item[0].image_merchandiseURL;
+    });
+    const getimages = await Promise.all(GetimagesPromises);
+
     // resolve(getimages)
     // console.log(imageBundling)
     const htmlContent = `
@@ -369,7 +369,7 @@ async function generateHTMLPDFBundling(data) {
               <p>Phone: ${data.buyer_details[0].phone_number}</p>
               </div>
               <div class="qr-code">
-                    ${getimages.map(item => `<img src="${item}" alt="Merchandise Image">`).join('')}
+                    ${getimages.map((item) => `<img src="${item}" alt="Merchandise Image">`).join("")}
                 </div>
               <div class="footer">
               <p>Thank you for being a valued supporter of TEDXUII!</p>
@@ -399,4 +399,4 @@ async function generateHTMLPDFBundling(data) {
   });
 }
 
-module.exports = { generateHTMLPDFEvent,generateHTMLPDFMerchandise,generateHTMLPDFBundling };
+module.exports = { generateHTMLPDFEvent, generateHTMLPDFMerchandise, generateHTMLPDFBundling };
