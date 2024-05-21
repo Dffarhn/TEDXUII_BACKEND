@@ -1,24 +1,16 @@
 const dotenv = require("dotenv");
 dotenv.config();
-const fs = require("fs");
-const path = require("path");
-const juice = require("juice");
 const Mailjet = require("node-mailjet");
 const { generateHTMLPDFEvent, generateHTMLPDFMerchandise, generateHTMLPDFBundling } = require("./emailfile/ticket/htmltopdf");
 const { emailbody } = require("./emailfile/body/emailbody");
 const mailjet = Mailjet.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
-
-// Read the HTML content
-
-// Function to convert image to base64
-// Convert the image and replace src in HTML content
 
 async function sendEmail(data, category) {
   return new Promise(async (resolve, reject) => {
     let pdfBuffer = null;
     let filename = null;
     let request = null;
-    const htmlContent = emailbody(data,category);
+    const htmlContent = emailbody(data, category);
 
     if (category === "event") {
       pdfBuffer = await generateHTMLPDFEvent(data);

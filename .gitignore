@@ -10,3 +10,5 @@ sektesmulter.js
 sekpdf.js
 
 database/
+
+src/function/emailfile/ticket/teshtml.html
