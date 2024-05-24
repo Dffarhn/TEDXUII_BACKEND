@@ -31,7 +31,7 @@ function MakePaymentData(data) {
       id: data.data_details[0].id,
       price: data.data_details[0].price,
       quantity: data.quantity,
-      name: data.data_details[0].name,
+      name: data.size ? `${data.data_details[0].name} ${data.size}` : data.data_details[0].name,
     },
     detail_customer: {
       first_name: data.buyer_details[0].username,

@@ -16,7 +16,7 @@ const Add_Transaction_merchandise = async (req, res) => {
     const data_merchandise = await CheckMerchandise(req);
     const data_buyer = await Add_Buyer(req);
 
-    const require = ["id_merchandise", "username", "email", "phone_number", "address", "quantity"];
+    const require = ["id_merchandise", "username", "email", "phone_number", "address", "quantity","size"];
 
     const check = validateRequestBody(data, require);
     // console.log(`checkvalid = ${check}`);
@@ -43,7 +43,7 @@ const Add_Transaction_merchandise = async (req, res) => {
   } catch (error) {
     await pool.query("ROLLBACK");
     console.log(error);
-    res.status(500).send({ msg: "internal server error" });
+    res.status(500).send({ msg: `${error.message}` });
   } finally {
     release();
   }

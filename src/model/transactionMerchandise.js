@@ -26,12 +26,12 @@ async function GetSpesificTransactionMerchandiseById(id) {
 async function AddMerchandiseTransactionDB(data, data_merchandise, data_buyer) {
   try {
     // console.log(data_merchandise.stock);
-    const { id_merchandise, quantity } = data;
+    const { id_merchandise, quantity,size } = data;
 
     if (data_merchandise.stock > 0 && data_merchandise.stock >= quantity) {
       // console.log("hitascsacasc");
 
-      const Main_Data = [id_merchandise, data_buyer.id_buyer, quantity];
+      const Main_Data = [id_merchandise, data_buyer.id_buyer,size, quantity];
       const dataString = [id_merchandise, data_buyer.id_buyer];
       //check uuid
       dataString.forEach((element) => {
@@ -60,8 +60,8 @@ async function AddMerchandiseTransactionDB(data, data_merchandise, data_buyer) {
         Main_Data.push(data_merchandise.stock - quantity);
         // Use parameterized query to prevent SQL injection
         const queryText_transaction = `
-        INSERT INTO public.transaction_merchandise(merchandise_id, buyer_id, quantity, gross_amount)
-        VALUES ($1, $2, $3, $4 )
+        INSERT INTO public.transaction_merchandise(merchandise_id, buyer_id,size, quantity, gross_amount)
+        VALUES ($1, $2, $3, $4,$5 )
         RETURNING *;
           `;
 
@@ -74,7 +74,7 @@ async function AddMerchandiseTransactionDB(data, data_merchandise, data_buyer) {
         // console.log(values);
 
         // Execute the query using parameterized values
-        const { rows } = await pool.query(queryText_transaction, values.slice(0, 4));
+        const { rows } = await pool.query(queryText_transaction, values.slice(0, 5));
 
         await pool.query(queryText_updateEvent, [values.at(0), values.at(values.length - 1)]);
 
@@ -86,14 +86,14 @@ async function AddMerchandiseTransactionDB(data, data_merchandise, data_buyer) {
           return dataSpesific;
         }
       } else {
-        throw new Error({ error: "Internal Server Error" });
+        throw new Error("Your data cannot insert to Database " );
       }
     } else {
-      throw new Error({ error: "Internal Server Error" });
+      throw new Error("Your data is not valid" );
     }
   } catch (error) {
     console.log(error);
-    throw new Error({ error: "Internal Server Error" });
+    throw new Error(`${error.message}`);
   }
 }
 
