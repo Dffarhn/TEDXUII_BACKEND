@@ -48,7 +48,7 @@ async function generateHTMLPDFEvent(data) {
                       <h3 style="margin: 0; font-size: 24px; padding: 20px 20px 0px 20px;">TICKET</h3>
                       <p style="margin: 0; font-size: 20px;padding: 0px 20px 0px 20px;">IDR ${data.gross_amount}</p>
                       <p style="margin: 0; font-size: 20px;padding: 0px 20px 0px 20px;">Ticket: <span style="color: #FFD700;">#${data.id}</span></p>
-                      <div style="margin-top: 20px; background-color:#fff; color: black; height:100%; padding:20px;";>
+                      <div style="margin-top: 10px; background-color:#fff; color: black; height:100%; padding: 10px 20px 0px 20px;";>
                           <p style="margin: 0; font-size: 20px;">Name: ${data.buyer_details[0].username}</p> <br>
                           <p style="margin: 0; font-size: 20px;">Email: ${data.buyer_details[0].email}</p>
                       </div>

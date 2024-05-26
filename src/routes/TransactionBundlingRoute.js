@@ -2,7 +2,6 @@ const pool = require("../../db_connect.js");
 const { Mutex } = require("async-mutex");
 const { validateRequestBody } = require("../function/Validator");
 const { AddbundlingTransactionDB } = require("../model/transactionBundling.js");
-const { AddMerchandiseTransactionDB } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
 const { CheckBundling } = require("../middleware/transactionMidBundling.js");
 const { Add_Buyer } = require("../middleware/transactionMid.js");

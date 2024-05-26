@@ -1,7 +1,5 @@
-const { updateParametersData, MakePaymentData } = require("../model/model_parameters_payment.js");
-const { v4: uuidv4 } = require("uuid");
+const { MakePaymentData } = require("../model/model_parameters_payment.js");
 const { MidtransPayment } = require("../function/payment.js");
-const { GetSpesificEventById } = require("../model/event.js");
 
 async function Midtrans_Payment(dataDB) {
   try {

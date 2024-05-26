@@ -8,7 +8,6 @@ const { route } = require("./src/routes/route.js");
 const pool = require("./db_connect.js");
 const dotenv = require("dotenv");
 const { Notification_Transaction, Cancel_Transaction_Event } = require("./src/routes/TransactionRoute.js");
-const { AccessApi } = require("./src/middleware/access_api.js");
 dotenv.config();
 
 const app = express();
@@ -18,7 +17,7 @@ app.use(cookieparser());
 const corsOptions = {
   origin: "*", // Replace 'https://example.com' with your specific URL
   optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
-  methods: ["GET", "POST", "PUT", "DELETE"], // Allow specified HTTP methods
+  methods: ["GET", "POST", "PUT", "DELETE","PATCH"], // Allow specified HTTP methods
 };
 //midtrans only
 

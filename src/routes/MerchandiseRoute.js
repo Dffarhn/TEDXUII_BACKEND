@@ -1,5 +1,5 @@
 const { client } = require("../../redis_connect.js");
-const { validateNumber, validateRequestBody, validatorUUID } = require("../function/Validator.js");
+const { validateRequestBody, validatorUUID } = require("../function/Validator.js");
 const { flushKeysStartingWith } = require("../function/redisflushupdate.js");
 const { GetSpesificMerchandiseById, GetAllMerchandise, AddMerchandiseDB, UpdateMerchadiseDB, DeleteMerchandiseDB } = require("../model/merchandise.js");
 
