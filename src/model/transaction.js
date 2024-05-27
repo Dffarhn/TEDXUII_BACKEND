@@ -190,4 +190,67 @@ async function UpdateEventTransactionDBWithoutSelectPayment(dataTransaction) {
   }
 }
 
-module.exports = { AddEventTransactionDB, GetSpesificTransactionById, UpdateEventTransactionDB,UpdateEventTransactionDBWithoutSelectPayment };
+
+async function CheckCategoryTransactionDB(order_id) {
+  try {
+    const queries = [
+      {
+        table: 'transaction_event',
+        result: 'event',
+        query: `
+          SELECT te.*, 
+                 json_agg(e.*) AS data_details, 
+                 json_agg(b.*) AS buyer_details
+          FROM transaction_event te
+          JOIN event e ON e.id = te.event_id
+          JOIN buyer b ON b.id_buyer = te.buyer_id
+          WHERE te.id = $1
+          GROUP BY te.id, te.gross_amount, te.status, te.quantity
+        `
+      },
+      {
+        table: 'transaction_merchandise',
+        result: 'merchandise',
+        query: `
+          SELECT te.*, 
+                 json_agg(m.*) AS data_details, 
+                 json_agg(b.*) AS buyer_details
+          FROM transaction_merchandise te
+          JOIN merchandise m ON m.id = te.merchandise_id
+          JOIN buyer b ON b.id_buyer = te.buyer_id
+          WHERE te.id = $1
+          GROUP BY te.id, te.gross_amount, te.status, te.quantity
+        `
+      },
+      {
+        table: 'transaction_bundling',
+        result: 'bundling',
+        query: `
+          SELECT te.*, 
+                 json_agg(m.*) AS data_details, 
+                 json_agg(b.*) AS buyer_details
+          FROM transaction_bundling te
+          JOIN bundling m ON m.id = te.bundling_id
+          JOIN buyer b ON b.id_buyer = te.buyer_id
+          WHERE te.id = $1
+          GROUP BY te.id, te.gross_amount, te.status, te.quantity
+        `
+      },
+    ];
+
+    for (const query of queries) {
+      const res = await pool.query(query.query, [order_id]);
+      if (res.rows.length > 0) {
+        return { category: query.result, data: res.rows[0] }; // Return the category and the actual row data
+      }
+    }
+
+    return 'order_id not found';
+  } catch (err) {
+    console.error('Database query error', err);
+    throw err;
+  }
+}
+
+
+module.exports = { AddEventTransactionDB, GetSpesificTransactionById, UpdateEventTransactionDB,UpdateEventTransactionDBWithoutSelectPayment,CheckCategoryTransactionDB };

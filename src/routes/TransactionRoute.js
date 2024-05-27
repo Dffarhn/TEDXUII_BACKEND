@@ -3,7 +3,7 @@ const { validateRequestBody } = require("../function/Validator");
 const { NotificationPayment, CancelPayment, Cek_Notification, ExpiredPayment } = require("../function/payment.js");
 const { flushKeysStartingWith } = require("../function/redisflushupdate.js");
 const { CheckEvent, Add_Buyer } = require("../middleware/transactionMid.js");
-const { AddEventTransactionDB, UpdateEventTransactionDB, UpdateEventTransactionDBWithoutSelectPayment } = require("../model/transaction");
+const { AddEventTransactionDB, UpdateEventTransactionDB, UpdateEventTransactionDBWithoutSelectPayment, CheckCategoryTransactionDB } = require("../model/transaction");
 const { UpdatebundlingTransactionDB, UpdateBundlingTransactionDBWithoutSelectPayment } = require("../model/transactionBundling.js");
 const { UpdateMerchandiseTransactionDB, UpdateMerchandiseTransactionDBWithoutSelectPayment } = require("../model/transactionMerchandise.js");
 const { Midtrans_Payment } = require("./MidtransRoute.js");
@@ -58,7 +58,7 @@ const Notification_Transaction = async (req, res) => {
 
     if (info_payment) {
       const update_transaction = Cek_Notification(info_payment);
-      console.log("in update transaction")
+      console.log("in update transaction");
 
       if (update_transaction !== "pending" && update_transaction !== "unknown") {
         if (info_payment.custom_field1 === "event") {
@@ -89,27 +89,39 @@ const Notification_Transaction = async (req, res) => {
 const Cancel_Transaction_Event = async (req, res) => {
   try {
     // const data = req.body;
-    const {order_id,transaction_status} = req.query
+    const { order_id, transaction_status } = req.query;
 
+    console.log(req.query);
+    console.log(req.body);
 
-    console.log(req.query)
-    console.log(req.body)
-    
-    
-    if (transaction_status === "pending" || transaction_status === undefined) {
-      console.log("EVENT UNFINISH LINK")
-      
+    if (transaction_status === "pending") {
+      console.log("EVENT UNFINISH LINK");
+
       const cancel_payment = await CancelPayment(order_id);
 
       if (cancel_payment.status_code === "200") {
-        res.redirect("https://tedxwebsite-umber.vercel.app/")
+        res.redirect("https://tedxwebsite-umber.vercel.app/");
       }
-    }else{
-      console.log("EVENT FINISH LINK")
-      res.redirect("https://tedxwebsite-umber.vercel.app/")
+    } else if (transaction_status === undefined) {
+      const CheckTheTransactionCategory = await CheckCategoryTransactionDB(order_id); //be event,merchandise or bundling
 
+      if (CheckTheTransactionCategory.category === "event") {
+        const update_transaction_event_toDB = await UpdateEventTransactionDBWithoutSelectPayment(CheckTheTransactionCategory.data);
+        console.log(update_transaction_event_toDB);
+        res.redirect("https://tedxwebsite-umber.vercel.app/");
+      } else if (CheckTheTransactionCategory.category === "merchandise") {
+        const update_transaction_Merchandise_toDB = await UpdateMerchandiseTransactionDBWithoutSelectPayment(CheckTheTransactionCategory.data);
+        console.log(update_transaction_Merchandise_toDB);
+        res.redirect("https://tedxwebsite-umber.vercel.app/");
+      } else if (CheckTheTransactionCategory.category === "bundling") {
+        const update_transaction_bundling_toDB = await UpdateBundlingTransactionDBWithoutSelectPayment(CheckTheTransactionCategory.data);
+        console.log(update_transaction_bundling_toDB);
+        res.redirect("https://tedxwebsite-umber.vercel.app/");
+      }
+    } else {
+      console.log("EVENT FINISH LINK");
+      res.redirect("https://tedxwebsite-umber.vercel.app/");
     }
-
   } catch (error) {
     res.status(500).send({ message: "internal server error" });
   }
@@ -128,33 +140,29 @@ const Expired_Transaction_Event = async (req, res) => {
   }
 };
 
-const failedTheTransactionWithoutSelectPayment = async(req,res)=>{
+const failedTheTransactionWithoutSelectPayment = async (req, res) => {
   try {
+    const { data } = req.body;
+    console.log(data[0]);
 
-    const {data} = req.body
-    console.log(data[0])
-
-    const dataTransaction = data[0]
+    const dataTransaction = data[0];
 
     if (dataTransaction.category === "event") {
       const update_transaction_event_toDB = await UpdateEventTransactionDBWithoutSelectPayment(dataTransaction);
       console.log(update_transaction_event_toDB);
-      res.status(200).send({msg:"Thank you for your Midtrans"});
+      res.status(200).send({ msg: "Thank you for your Midtrans" });
     } else if (dataTransaction.category === "merchandise") {
       const update_transaction_Merchandise_toDB = await UpdateMerchandiseTransactionDBWithoutSelectPayment(dataTransaction);
       console.log(update_transaction_Merchandise_toDB);
-      res.status(200).send({msg:"Thank you for your Midtrans"});
+      res.status(200).send({ msg: "Thank you for your Midtrans" });
     } else if (dataTransaction.category === "bundling") {
       const update_transaction_bundling_toDB = await UpdateBundlingTransactionDBWithoutSelectPayment(dataTransaction);
       console.log(update_transaction_bundling_toDB);
-      res.status(200).send({msg:"Thank you for your Midtrans"});
+      res.status(200).send({ msg: "Thank you for your Midtrans" });
     }
-    
   } catch (error) {
-
     res.status(500).send({ message: "internal server error" });
-    
   }
-}
+};
 
-module.exports = { Add_Transaction_Event, Notification_Transaction, Cancel_Transaction_Event, Expired_Transaction_Event,failedTheTransactionWithoutSelectPayment };
+module.exports = { Add_Transaction_Event, Notification_Transaction, Cancel_Transaction_Event, Expired_Transaction_Event, failedTheTransactionWithoutSelectPayment };

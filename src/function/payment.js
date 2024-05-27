@@ -45,14 +45,15 @@ function MidtransPayment(data) {
       expiry: {
         start_time: created_at,
         unit: "hours",
-        duration: 2,
+        duration: 1,
       },
       page_expiry: {
-        duration: 2,
-        unit: "hours",
+        duration: 7,
+        unit: "minutes",
       },
       callbacks: {
-        "finish": "https://tedxuiibackend-production.up.railway.app/transaction/cancel/v1"
+        "finish": "https://tedxuiibackend-production.up.railway.app/transaction/cancel/v1",
+        "unfinish": "https://tedxuiibackend-production.up.railway.app/transaction/cancel/v1"
       },
 
       custom_field1: custom_field1,
