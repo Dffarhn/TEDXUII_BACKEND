@@ -96,7 +96,7 @@ const Cancel_Transaction_Event = async (req, res) => {
     console.log(req.body)
     
     
-    if (transaction_status === "pending" || transaction_status === "expire" || transaction_status === "cancel") {
+    if (transaction_status === "pending" || transaction_status === undefined) {
       console.log("EVENT UNFINISH LINK")
       
       const cancel_payment = await CancelPayment(order_id);
