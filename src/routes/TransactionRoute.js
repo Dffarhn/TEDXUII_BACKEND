@@ -90,6 +90,9 @@ const Cancel_Transaction_Event = async (req, res) => {
   try {
     // const data = req.body;
     const {order_id,transaction_status} = req.query
+
+
+    console.log(transaction_status)
     
     
     if (transaction_status === "pending" || transaction_status === "expire" || transaction_status === "cancel") {
