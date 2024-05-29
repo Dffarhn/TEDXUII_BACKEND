@@ -18,6 +18,7 @@ const corsOptions = {
   origin: "*", // Replace 'https://example.com' with your specific URL
   optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
   methods: ["GET", "POST", "PUT", "DELETE","PATCH"], // Allow specified HTTP methods
+  credentials: true
 };
 //midtrans only
 
