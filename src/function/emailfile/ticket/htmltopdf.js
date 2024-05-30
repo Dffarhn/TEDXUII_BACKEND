@@ -172,7 +172,7 @@ async function generateHTMLPDFMerchandise(data) {
           <body>
           <div class="ticket-container">
               <div class="logo-container">
-              <img src="tedx_logo.png" alt="TEDx Logo">
+              <img src="https://dcryovkodooolghlrbrj.supabase.co/storage/v1/object/public/TEDXUII/Email/2.png" alt="TEDx Logo">
               </div>
               <div class="event-details">
               <h2>TEDxUII Merchandise</h2>
