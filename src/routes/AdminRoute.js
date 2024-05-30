@@ -25,15 +25,18 @@ const register = async (req, res) => {
 
         // Assigning refresh token in http-only cookie
         res.cookie("jwt", refreshToken, {
-          httpOnly: false,
-          sameSite: "None",
-          secure: false,
-          maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+        maxAge: 24 * 60 * 60 * 1000,
         });
 
         data.accessToken = accessToken;
 
-        res.status(200).send({ msg: "register successfully", data: data });
+        res.status(200).send({ msg: "register successfully", data: data,tokens: {
+          accessToken: accessToken,
+          refreshToken: refreshToken
+        } });
       } else {
         res.status(500).send({ msg: "internal server error" });
       }
@@ -69,13 +72,19 @@ const login = async (req, res) => {
 
       // Assigning refresh token in http-only cookie
       res.cookie("jwt", refreshToken, {
-        httpOnly: false,
-        sameSite: "None",
-        secure: false,
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
 
-      res.status(200).send({ msg: "Login successful", token:accessToken });
+      res.status(200).send({
+        msg: "Login successful",
+        tokens: {
+          accessToken: accessToken,
+          refreshToken: refreshToken
+        }
+      });
     } else {
       res.status(401).send({ msg: "Invalid email or password." });
     }

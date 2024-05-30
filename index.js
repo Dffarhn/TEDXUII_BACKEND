@@ -5,27 +5,27 @@ const cookieparser = require("cookie-parser");
 
 const { route } = require("./src/routes/route.js");
 
-const pool = require("./db_connect.js");
 const dotenv = require("dotenv");
 const { Notification_Transaction, Cancel_Transaction_Event } = require("./src/routes/TransactionRoute.js");
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3002;
-app.use(helmet());
 app.use(cookieparser());
+app.use(helmet());
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://127.0.0.1:5500","https://tedxwebsite-umber.vercel.app"], // Replace 'https://example.com' with your specific URL
+  origin: "*", // Replace with your specific URLs
   optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
-  methods: ["GET", "POST", "PUT", "DELETE","PATCH"], // Allow specified HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With","access_api"], // Specify allowed request headers
-  credentials: true // Ensure credentials (cookies) are included
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"], // Allow specified HTTP methods
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "access_api"], // Specify allowed request headers
 };
+
 //midtrans only
 
 
 app.use(cors(corsOptions));
 app.use(express.json());
+
 app.get("/transaction/cancel/v1", Cancel_Transaction_Event);
 app.post("/transaction/notif", Notification_Transaction);
 app.get("/", (req, res) => {
