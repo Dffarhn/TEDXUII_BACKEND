@@ -15,10 +15,11 @@ const PORT = process.env.PORT || 3002;
 app.use(helmet());
 app.use(cookieparser());
 const corsOptions = {
-  origin: "*", // Replace 'https://example.com' with your specific URL
+  origin: ["http://localhost:3000", "http://127.0.0.1:5500","https://tedxwebsite-umber.vercel.app"], // Replace 'https://example.com' with your specific URL
   optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
   methods: ["GET", "POST", "PUT", "DELETE","PATCH"], // Allow specified HTTP methods
-  credentials: true
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With","access_api"], // Specify allowed request headers
+  credentials: true // Ensure credentials (cookies) are included
 };
 //midtrans only
 
