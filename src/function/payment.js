@@ -2,7 +2,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 const midtransClient = require("midtrans-client");
 
-
 let apiClient = new midtransClient.Snap({
   isProduction: false,
   serverKey: process.env.MT_SERVER_KEY,
@@ -13,11 +12,11 @@ function MidtransPayment(data) {
   return new Promise((resolve, reject) => {
     const { order_id, gross_amount, detail_data, detail_customer, created_at, custom_field1 } = data;
     // console.log(custom_field1)
-
+    const finalprice = parseInt(gross_amount,10) + 5000
     let parameter = {
       transaction_details: {
         order_id: order_id,
-        gross_amount: gross_amount,
+        gross_amount: finalprice,
       },
       item_details: [
         {
@@ -25,6 +24,12 @@ function MidtransPayment(data) {
           price: detail_data.price,
           quantity: detail_data.quantity,
           name: detail_data.name,
+        },
+        {
+          id: "Administrasi5000",
+          price: 5000,
+          quantity: 1,
+          name: "Biaya Transaksi Dan Admin",
         },
       ],
       customer_details: {
@@ -52,8 +57,8 @@ function MidtransPayment(data) {
         unit: "minutes",
       },
       callbacks: {
-        "finish": "https://tedxuiibackend-production.up.railway.app/transaction/cancel/v1",
-        "unfinish": "https://tedxuiibackend-production.up.railway.app/transaction/cancel/v1"
+        finish: "https://tedxuiibackend-production.up.railway.app/transaction/cancel/v1",
+        unfinish: "https://tedxuiibackend-production.up.railway.app/transaction/cancel/v1",
       },
 
       custom_field1: custom_field1,
