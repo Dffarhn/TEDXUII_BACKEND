@@ -17,7 +17,7 @@ const corsOptions = {
   origin: "*", // Replace with your specific URLs
   optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"], // Allow specified HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "access_api"], // Specify allowed request headers
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "access_api","refresh_token"], // Specify allowed request headers
 };
 
 //midtrans only

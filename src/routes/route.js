@@ -19,7 +19,7 @@ route.use(AccessApi)
 route.post("/login", login);
 route.post("/register", register);
 
-route.get('/refreshtoken', Refresh_Access_Token)
+route.post('/refreshtoken', Refresh_Access_Token)
 
 //route transaction bundling
 route.post("/transaction/bundling", Add_Transaction_Bundling);

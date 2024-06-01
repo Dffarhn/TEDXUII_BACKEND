@@ -25,7 +25,9 @@ const Auth_Access = (req, res, next) => {
 
 const Refresh_Access_Token = async (req, res) => {
   try {
-    const refreshToken = req.cookies.jwt;
+
+    console.log(req.headers["refresh_token"])
+    const refreshToken = req.headers["refresh_token"];
 
     if (!refreshToken) {
       return res.status(401).json({ message: "Refresh token is missing." });
