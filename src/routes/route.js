@@ -13,7 +13,7 @@ const { redisCacheMiddleware_Bundling, redisCacheMiddleware_Merchandises, redisC
 const { AccessApi } = require("../middleware/access_api.js");
 
 const route = Router();
-route.use(AccessApi)
+// route.use(AccessApi)
 
 //admin
 route.post("/login", login);

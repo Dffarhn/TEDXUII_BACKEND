@@ -16,7 +16,7 @@ const register = async (req, res) => {
       if (add_admin) {
         const payload = { id: add_admin.id, username: add_admin.username, email: add_admin.email };
         const accessToken = jwt.sign(payload, process.env.SECRET_KEY_TOKEN, {
-          expiresIn: "10m",
+          expiresIn: "30m",
         });
 
         const refreshToken = jwt.sign(payload, process.env.SECRET_KEY_REFRESH_TOKEN, {
@@ -63,7 +63,7 @@ const login = async (req, res) => {
     if (userExists) {
       const payload = { id: userExists.id, username: userExists.username, email: userExists.email };
       const accessToken = jwt.sign(payload, process.env.SECRET_KEY_TOKEN, {
-        expiresIn: "10m",
+        expiresIn: "30m",
       });
 
       const refreshToken = jwt.sign(payload, process.env.SECRET_KEY_REFRESH_TOKEN, {
