@@ -1,6 +1,6 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
-const { GenerateSignedUrl } = require("../function/supabaseImage.js");
+const { GenerateSignedUrl, DeleteImage } = require("../function/supabaseImage.js");
 
 async function GetAllEvent(sort = null, year = null, name = null) {
   let queryString = "SELECT event.*, category.nama_category AS category_name FROM event";
@@ -185,6 +185,14 @@ async function UpdateEventDB(data) {
 async function DeleteEventDB(id_event) {
   try {
     const data = [id_event];
+
+    const getpathemail = await GetSpesificEventById(id_event)
+
+    console.log(getpathemail[0].image)
+
+    const deleteimagefile = await DeleteImage(getpathemail[0].image)
+
+
     const query = `
 
     DELETE FROM public.event

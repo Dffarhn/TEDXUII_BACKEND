@@ -1,6 +1,6 @@
 const pool = require("../../db_connect.js");
 const { validatorUUID, validateNumber, validateNoSpaces, validateNotNull, validateNoSpacesArray } = require("../function/Validator.js");
-const { GenerateSignedUrl } = require("../function/supabaseImage.js");
+const { GenerateSignedUrl, DeleteImage } = require("../function/supabaseImage.js");
 
 async function GetAllMerchandise(sort = null) {
   let queryString = "SELECT * FROM Merchandise";
@@ -179,6 +179,13 @@ async function UpdateMerchadiseDB(data) {
 async function DeleteMerchandiseDB(id_merchandise) {
   try {
     const data = [id_merchandise];
+
+    const getpathemail = await GetSpesificMerchandiseById(id_merchandise)
+
+    console.log(getpathemail[0].image_merchandise)
+
+    const deleteimagefile = await DeleteImage(getpathemail[0].image_merchandise)
+
     const query = `
 
     DELETE FROM public.merchandise
