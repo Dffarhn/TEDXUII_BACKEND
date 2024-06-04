@@ -57,8 +57,8 @@ function MidtransPayment(data) {
         unit: "minutes",
       },
       callbacks: {
-        finish: "https://tedxuiibackend-production.up.railway.app/transaction/cancel/v1",
-        unfinish: "https://tedxuiibackend-production.up.railway.app/transaction/cancel/v1",
+        finish: "https://api.tedxuii.com/transaction/cancel/v1",
+        unfinish: "https://api.tedxuii.com/transaction/cancel/v1",
       },
 
       custom_field1: custom_field1,
